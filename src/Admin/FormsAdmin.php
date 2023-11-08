@@ -2,15 +2,18 @@
 
 namespace Goldfinch\Component\Forms\Admin;
 
+use SilverStripe\Admin\ModelAdmin;
+use JonoM\SomeConfig\SomeConfigAdmin;
 use Goldfinch\Component\Forms\Blocks\FormBlock;
 use Goldfinch\Component\Forms\Models\FormRecord;
 use Goldfinch\Component\Forms\Configs\FormConfig;
 use Goldfinch\Component\Forms\Models\FormSegment;
-use SilverStripe\Admin\ModelAdmin;
 use SilverStripe\Forms\GridField\GridFieldConfig;
 
 class FormsAdmin extends ModelAdmin
 {
+    use SomeConfigAdmin;
+
     private static $url_segment = 'forms';
     private static $menu_title = 'Forms';
     private static $menu_icon_class = 'bi-send-fill';
