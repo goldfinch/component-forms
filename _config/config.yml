@@ -1,0 +1,7 @@
+---
+Name: goldfinch-component-forms
+---
+
+Goldfinch\Component\Forms\Admin\FormsAdmin:
+  extensions:
+    - Goldfinch\Helpers\Extensions\BlocksAdminExtension
