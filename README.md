@@ -3,10 +3,10 @@
 app/_config/component-forms.yml
 ```
 ---
-Name: app-component-form
+Name: app-component-forms
 ---
 
-Goldfinch\Component\Form\Models\FormSegment:
+Goldfinch\Component\Forms\Models\FormSegment:
   segment_types:
     contact:
       label: 'Contact form'
@@ -41,7 +41,7 @@ app/_schema/form-{segment_type}.json
 
 3)
 
-themes/{theme}/templates/Components/Form/{segment_type}.ss
+themes/{theme}/templates/Components/Forms/{segment_type}.ss
 
 ```
 my custom template for specific segment type
