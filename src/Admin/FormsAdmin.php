@@ -9,6 +9,7 @@ use Goldfinch\Component\Forms\Models\FormRecord;
 use Goldfinch\Component\Forms\Configs\FormConfig;
 use Goldfinch\Component\Forms\Models\FormSegment;
 use SilverStripe\Forms\GridField\GridFieldConfig;
+use SilverStripe\Forms\GridField\GridFieldAddNewButton;
 
 class FormsAdmin extends ModelAdmin
 {
@@ -51,7 +52,10 @@ class FormsAdmin extends ModelAdmin
     {
         $config = parent::getGridFieldConfig();
 
-        // ..
+        if ($this->modelClass == FormRecord::class)
+        {
+            $config->removeComponentsByType(GridFieldAddNewButton::class);
+        }
 
         return $config;
     }
