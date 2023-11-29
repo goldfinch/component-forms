@@ -1,0 +1,39 @@
+<?php
+{{ namespace }}
+use Goldfinch\Component\Forms\Extensions\FormRequester;
+use Goldfinch\Illuminate\Validator;
+
+class {{ class }}Request extends FormRequester
+{
+    // public static $segment_type = '';
+
+    public static function handle()
+    {
+        $data = self::getData();
+
+        // self::$emailBody = '';
+
+        $handle = parent::handle();
+
+        return $handle;
+    }
+
+    public static function validator()
+    {
+        parent::validator();
+
+        $supplies = self::getSegmentSupplies();
+        $cfg = self::getSegmentConfig();
+
+        Validator::validate(self::getData(), [
+            // 'name' => 'required',
+        ]);
+
+        return true;
+    }
+
+    // protected static function message($data)
+    // {
+    //     return '<div>Thank you, <strong>'.$data['name'].'</strong></div>';
+    // }
+}
