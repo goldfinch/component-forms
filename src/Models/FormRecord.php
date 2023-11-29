@@ -2,6 +2,7 @@
 
 namespace Goldfinch\Component\Forms\Models;
 
+use Carbon\Carbon;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Forms\LiteralField;
 
@@ -20,6 +21,7 @@ class FormRecord extends DataObject
     ];
 
     private static $summary_fields = [
+        'GetTimeAgo' => 'Time ago',
         'Created' => 'Received at',
         'Segment.Type' => 'Type',
     ];
@@ -29,7 +31,7 @@ class FormRecord extends DataObject
     // private static $many_many = [];
     // private static $many_many_extraFields = [];
     // private static $belongs_many_many = [];
-    // private static $default_sort = null;
+    private static $default_sort = 'Created DESC';
     // private static $indexes = null;
     // private static $owns = [];
     // private static $casting = [];
@@ -65,6 +67,11 @@ class FormRecord extends DataObject
         );
 
         return $fields;
+    }
+
+    public function GetTimeAgo()
+    {
+        return Carbon::parse($this->Created)->diffForHumans();
     }
 
     // public function validate()

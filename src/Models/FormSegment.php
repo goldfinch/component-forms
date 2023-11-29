@@ -2,18 +2,20 @@
 
 namespace Goldfinch\Component\Forms\Models;
 
-use Goldfinch\Component\Forms\Blocks\FormBlock;
-use Goldfinch\Component\Forms\Models\FormRecord;
+use SilverStripe\ORM\ArrayList;
 use SilverStripe\View\SSViewer;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Forms\TextField;
 use SilverStripe\Forms\FieldGroup;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\DropdownField;
+use SilverStripe\Forms\TextareaField;
 use SilverStripe\Security\Permission;
 use SilverStripe\Forms\GridField\GridField;
 use UncleCheese\DisplayLogic\Forms\Wrapper;
+use Goldfinch\Component\Forms\Blocks\FormBlock;
 use Goldfinch\JSONEditor\Forms\JSONEditorField;
+use Goldfinch\Component\Forms\Models\FormRecord;
 use SilverStripe\Forms\GridField\GridFieldConfig;
 use Goldfinch\JSONEditor\ORM\FieldType\DBJSONText;
 use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
@@ -38,13 +40,23 @@ class FormSegment extends DataObject
         'Type' => 'Varchar',
         'Disabled' => 'Boolean',
 
+        'FormName' => 'Varchar',
         'FormSubject' => 'Varchar',
-        'FormRecipients' => 'Varchar',
-        'FormBody' => 'HTMLText',
+        'FormFrom' => 'Varchar',
+        'FormReplyTo' => 'Varchar',
+        'FormTo' => 'Text',
+        'FormBcc' => 'Text',
+        'FormCc' => 'Text',
+        // 'FormBody' => 'HTMLText',
         'FormSuccessMessage' => 'HTMLText',
-        'FormFailMessage' => 'HTMLText',
+        // 'FormFailMessage' => 'HTMLText',
+
         'FormSendSenderEmail' => 'Boolean',
+
+        'FormSenderName' => 'Varchar',
         'FormSenderSubject' => 'Varchar',
+        'FormSenderFrom' => 'Varchar',
+        'FormSenderReplyTo' => 'Varchar',
         'FormSenderBody' => 'HTMLText',
 
         'Parameters' => DBJSONText::class,
@@ -78,7 +90,58 @@ class FormSegment extends DataObject
 
     // * goldfinch/helpers
     // private static $field_descriptions = [];
-    // private static $required_fields = [];
+    private static $required_fields = [
+        'FormName',
+        'FormSubject',
+        'FormFrom',
+        'FormReplyTo',
+        'FormTo',
+    ];
+
+    public function formatedTo()
+    {
+        return $this->formatInlineEmails($this->FormTo);
+    }
+
+    public function formatedBcc()
+    {
+        return $this->formatInlineEmails($this->FormBcc);
+    }
+
+    public function formatedCc()
+    {
+        return $this->formatInlineEmails($this->FormCc);
+    }
+
+    private function formatInlineEmails($str)
+    {
+        $data = [];
+
+        if ($str)
+        {
+            $explodedItems = explode(PHP_EOL, $str);
+
+            foreach ($explodedItems as $key => $line)
+            {
+                if (strpos($line, ':') !== false)
+                {
+                    $item = explode(':', $line);
+
+                    $itemEmail = trim($item[0]);
+                    $itemName = trim($item[1]);
+                }
+                else
+                {
+                    $itemEmail = trim($item[0]);
+                    $itemName = explode('@', $itemEmail)[0];
+                }
+
+                $data[$itemEmail] = $itemName;
+            }
+        }
+
+        return $data;
+    }
 
     public function RenderSegmentForm()
     {
@@ -99,6 +162,39 @@ class FormSegment extends DataObject
         }
 
         return null;
+    }
+
+    public function FormSupplies()
+    {
+        $types = $this->config()->get('segment_types');
+
+        $cfg = $this->getSegmentTypeConfig();
+
+        if ($cfg && isset($cfg['supplies_fields']))
+        {
+            $parameters = $this->dbObject('Parameters')->Parse()->toMap();
+
+            $data = [
+                'id' => $this->ID,
+                'parameters' => [],
+            ];
+
+            foreach($cfg['supplies_fields'] as $field)
+            {
+                $item = $parameters[$field];
+
+                if (is_object($item) && get_class($item) == ArrayList::class)
+                {
+                    $data['parameters'][$field] = $item->toArray();
+                }
+                else if (is_string($item))
+                {
+                    $data['parameters'][$field] = $item;
+                }
+            }
+
+            return json_encode($data);
+        }
     }
 
     public function RecordsCounter()
@@ -123,6 +219,22 @@ class FormSegment extends DataObject
         }
 
         return null;
+    }
+
+    public function replacableData($string, $data)
+    {
+        $cfg = $this->getSegmentTypeConfig();
+
+        if ($cfg && $cfg['replacable_data'])
+        {
+            $replace_from = array_map(fn($value): string => ('[' . $value . ']'), $cfg['replacable_data']);
+
+            $replace_to = array_only($data, $cfg['replacable_data']);
+
+            $string = str_replace($replace_from, $replace_to, $string);
+        }
+
+        return $string;
     }
 
     public function getSegmentTypeConfig($param = null)
@@ -160,13 +272,23 @@ class FormSegment extends DataObject
             'Type',
             'Disabled',
             'Parameters',
+
+            'FormName',
             'FormSubject',
-            'FormRecipients',
-            'FormBody',
+            'FormFrom',
+            'FormReplyTo',
+            'FormTo',
+            'FormBcc',
+            'FormCc',
+            // 'FormBody',
             'FormSuccessMessage',
-            'FormFailMessage',
+            // 'FormFailMessage',
+
             'FormSendSenderEmail',
+            'FormSenderName',
             'FormSenderSubject',
+            'FormSenderFrom',
+            'FormSenderReplyTo',
             'FormSenderBody',
         ]);
 
@@ -207,6 +329,48 @@ class FormSegment extends DataObject
             ]
         );
 
+        if ($this->getSegmentTypeConfig('settings'))
+        {
+            $fields->addFieldsToTab(
+                'Root.Settings',
+                [
+                    FieldGroup::create(
+
+                        TextField::create('FormName', 'Name')->setAttribute('placeholder', 'Jaina Proudmoore')->addExtraClass('fcol-6'),
+                        TextField::create('FormFrom', 'From')->setAttribute('placeholder', 'jaina@proudmoore.com')->addExtraClass('fcol-6'),
+                        TextField::create('FormSubject', 'Subject')->setAttribute('placeholder', 'Contact enquiry')->addExtraClass('fcol-6'),
+                        TextField::create('FormReplyTo', 'Reply to')->setAttribute('placeholder', 'jaina@proudmoore.com')->addExtraClass('fcol-6'),
+                        TextareaField::create('FormTo', 'To')->addExtraClass('fcol-12')->setAttribute('placeholder', 'john@doe.com : John Doe
+varian@wrynn.com : Varian Wrynn'),
+                        TextareaField::create('FormBcc', 'BCC')->addExtraClass('fcol-12')->setAttribute('placeholder', 'john@doe.com : John Doe
+varian@wrynn.com : Varian Wrynn'),
+                        TextareaField::create('FormCc', 'CC')->addExtraClass('fcol-12')->setAttribute('placeholder', 'john@doe.com : John Doe
+varian@wrynn.com : Varian Wrynn'),
+                        // HTMLEditorField::create('FormBody', 'Body')->addExtraClass('fcol-12'),
+                        HTMLEditorField::create('FormSuccessMessage', 'Thank you message')->addExtraClass('fcol-12'),
+                        // HTMLEditorField::create('FormFailMessage', 'Failed message')->addExtraClass('fcol-12'),
+
+                    )->setTitle('Email to admin'),
+
+                    CheckboxField::create('FormSendSenderEmail','Send confirmation email to the sender'),
+                    Wrapper::create(
+
+                        FieldGroup::create(
+
+                            TextField::create('FormSenderName', 'Name')->setAttribute('placeholder', 'Jaina Proudmoore')->addExtraClass('fcol-6'),
+                            TextField::create('FormSenderFrom', 'From')->setAttribute('placeholder', 'jaina@proudmoore.com')->addExtraClass('fcol-6'),
+                            TextField::create('FormSenderSubject', 'Subject')->setAttribute('placeholder', 'Thank you for your enquiry')->addExtraClass('fcol-6'),
+                            TextField::create('FormSenderReplyTo', 'Reply to')->setAttribute('placeholder', 'jaina@proudmoore.com')->addExtraClass('fcol-6'),
+                            HTMLEditorField::create('FormSenderBody', 'Body')->addExtraClass('fcol-12'),
+
+                        )->setTitle('Email to sender'),
+
+                    )->displayIf('FormSendSenderEmail')->isChecked()->end(),
+
+                ]
+            );
+        }
+
         if ($this->ID && $this->Type)
         {
             $schemaParamsPath = BASE_PATH . '/app/_schema/' . 'form-' . $this->Type . '.json';
@@ -218,41 +382,10 @@ class FormSegment extends DataObject
                 $fields->addFieldsToTab(
                     'Root.Settings',
                     [
-                        JSONEditorField::create('Parameters', 'Parameters', $this, [], '{}', null, $schemaParams),
+                        JSONEditorField::create('Parameters', 'Parameters', $this, [], '{}', null, $schemaParams)->addExtraClass('mt-2'),
                     ]
                 );
             }
-        }
-
-        if ($this->getSegmentTypeConfig('settings'))
-        {
-            $fields->addFieldsToTab(
-                'Root.Settings',
-                [
-                    FieldGroup::create(
-
-                        TextField::create('FormSubject', 'Subject')->setAttribute('placeholder', 'Contact enquiry')->addExtraClass('fcol-6'),
-                        TextField::create('FormRecipients', 'Recipients')->setAttribute('placeholder', 'johndoe@johndoe.com')->addExtraClass('fcol-6'),
-                        HTMLEditorField::create('FormBody', 'Body')->addExtraClass('fcol-12'),
-                        HTMLEditorField::create('FormSuccessMessage', 'Form sent message')->addExtraClass('fcol-12'),
-                        HTMLEditorField::create('FormFailMessage', 'Form failed message')->addExtraClass('fcol-12'),
-
-                    )->setTitle('Email to admin'),
-
-                    CheckboxField::create('FormSendSenderEmail','Send confirmation email to the sender'),
-                    Wrapper::create(
-
-                        FieldGroup::create(
-
-                            TextField::create('FormSenderSubject', 'Subject')->setAttribute('placeholder', 'Thank you for your enquiry')->addExtraClass('fcol-6'),
-                            HTMLEditorField::create('FormSenderBody', 'Body')->addExtraClass('fcol-12'),
-
-                        )->setTitle('Email to sender'),
-
-                    )->displayIf('FormSendSenderEmail')->isChecked()->end(),
-
-                ]
-            );
         }
 
         return $fields;
