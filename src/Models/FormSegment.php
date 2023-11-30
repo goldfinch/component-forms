@@ -177,6 +177,7 @@ class FormSegment extends DataObject
             $data = [
                 'id' => $this->ID,
                 'parameters' => [],
+                'form' => isset($cfg['vue']) ? $cfg['vue'] : [],
             ];
 
             foreach($cfg['supplies_fields'] as $field)
