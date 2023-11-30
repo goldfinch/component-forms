@@ -1,7 +1,8 @@
 1)
 
 app/_config/component-forms.yml
-```---
+```
+---
 Name: app-component-forms
 ---
 
@@ -23,6 +24,12 @@ Goldfinch\Component\Forms\Models\FormSegment:
       replacable_data:
         - name
         - email
+      vue:
+        component: 'ContactForm'
+        action: 'contact'
+        url: '/api/req/contact'
+        id: 'form-contact'
+        testmode: true
     newsletter:
       label: 'Newsletter'
       settings: false
