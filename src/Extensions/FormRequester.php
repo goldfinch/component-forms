@@ -15,11 +15,9 @@ class FormRequester extends Requester
     public static $segment_type;
     public static $emailBody;
 
-    public static $fallback_email = 'myfallback@email.com';
-    public static $fallback_from_name = 'Enquiry';
+    public static $fallback_email = 'johndoe@example.com';
+    public static $fallback_from_name = 'John Doe';
     public static $fallback_from_subject = 'Subject';
-    public static $fallback_fromsender_name = 'Enquiry';
-    public static $fallback_fromsender_subject = 'Thank you for your enquiry';
 
     public static function handle()
     {
@@ -32,24 +30,32 @@ class FormRequester extends Requester
 
         // send email to admin
         SendGrid::send([
-            'name' => $segment->FormName ?? self::$fallback_from_name,
-            'from' => $segment->FormFrom ?? self::$fallback_email,
-            'subject' => $segment->FormSubject ?? self::$fallback_from_subject,
-            'reply_to' => $segment->FormReplyTo ?? self::$fallback_email,
-            'to' => $segment->formatedTo() ?? self::$fallback_email,
-            'bcc' => $segment->formatedBcc() ?? self::$fallback_email,
-            'cc' => $segment->formatedCc() ?? self::$fallback_email,
-            'body' => self::$emailBody,
+            'name' => $segment->FormName ?? static::$fallback_from_name,
+            'from' => $segment->FormFrom ?? static::$fallback_email,
+            'subject' => $segment->FormSubject ?? static::$fallback_from_subject,
+            'reply_to' => $segment->FormReplyTo ?? static::$fallback_email,
+            'to' => $segment->formatedTo() && !empty($segment->formatedTo()) ? $segment->formatedTo() : static::$fallback_email,
+            'bcc' => $segment->formatedBcc() && !empty($segment->formatedBcc()) ? $segment->formatedBcc() : null,
+            'cc' => $segment->formatedCc() && !empty($segment->formatedCc()) ? $segment->formatedCc() : null,
+            'body' => static::$emailBody,
         ]);
 
-        // send email to the userw
-        if ($segment->FormSendSenderEmail && $data['email'])
+        // send email to the user
+        if (
+          $segment->FormSendSenderEmail &&
+          $data['email'] &&
+
+          $segment->FormSenderName &&
+          $segment->FormSenderFrom &&
+          $segment->FormSenderSubject &&
+          $segment->FormSenderReplyTo
+        )
         {
             SendGrid::send([
-                'name' => $segment->FormSenderName ?? self::$fallback_fromsender_name,
-                'from' => $segment->FormSenderFrom ?? self::$fallback_email,
-                'subject' => $segment->FormSenderSubject ?? self::$fallback_fromsender_subject,
-                'reply_to' => $segment->FormSenderReplyTo ?? self::$fallback_email,
+                'name' => $segment->FormSenderName,
+                'from' => $segment->FormSenderFrom,
+                'subject' => $segment->FormSenderSubject,
+                'reply_to' => $segment->FormSenderReplyTo,
                 'to' => [$data['email'] => $data['name']],
                 'body' => $segment->replacableData($segment->FormSenderBody, $data),
             ]);

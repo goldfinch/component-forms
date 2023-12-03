@@ -170,15 +170,15 @@ class FormSegment extends DataObject
 
         $cfg = $this->getSegmentTypeConfig();
 
+        $data = [
+            'id' => $this->ID,
+            'parameters' => [],
+            'form' => isset($cfg['vue']) ? $cfg['vue'] : [],
+        ];
+
         if ($cfg && isset($cfg['supplies_fields']))
         {
             $parameters = $this->dbObject('Parameters')->Parse()->toMap();
-
-            $data = [
-                'id' => $this->ID,
-                'parameters' => [],
-                'form' => isset($cfg['vue']) ? $cfg['vue'] : [],
-            ];
 
             foreach($cfg['supplies_fields'] as $field)
             {
@@ -196,6 +196,8 @@ class FormSegment extends DataObject
 
             return json_encode($data);
         }
+
+        return json_encode($data);
     }
 
     public function RecordsCounter()
