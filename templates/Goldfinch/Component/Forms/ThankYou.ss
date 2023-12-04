@@ -1,5 +1,3 @@
-<h1>Thank you message!</h1>
-
+<h1>$Title</h1>
 $Message
-
 <a href="{$BackLink}">Go back</a>

@@ -52,6 +52,7 @@ class FormSegment extends DataObject
         // 'FormFailMessage' => 'HTMLText',
 
         'FormThankYouPage' => 'Boolean',
+        'FormThankYouPageTitle' => 'Varchar',
 
         'FormSendSenderEmail' => 'Boolean',
 
@@ -362,6 +363,8 @@ varian@wrynn.com : Varian Wrynn'),
                       'FormThankYouPage',
                       'Thank you page'
                     )->setDescription('Show thank you message on its own page'),
+
+                    TextField::create('FormThankYouPageTitle', 'Thank you page (Title)')->displayIf('FormThankYouPage')->isChecked()->end(),
 
                     CheckboxField::create('FormSendSenderEmail','Send confirmation email to the sender'),
                     Wrapper::create(

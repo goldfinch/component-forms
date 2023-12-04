@@ -56,13 +56,21 @@ class ThankYou extends Controller
 
                 $session->clear($thankYouSessionName);
 
+                $title = $segment->FormThankYouPageTitle;
+
+                $this->MetaTitle = $title;
+
                 $data = new ArrayData([
+                  'Title' => $title,
                   'Segment' => $segment,
                   'Message' => $message,
                   'BackLink' => $_SERVER['HTTP_REFERER'],
                 ]);
 
-                return $this->customise($data);
+                return $this->customise([
+                  'Layout' => $this->customise($data)->renderWith(ThankYou::class),
+                  'Dashpanel' => '',
+                ])->renderWith('Page');
             }
         }
 
