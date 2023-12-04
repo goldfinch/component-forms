@@ -7,4 +7,4 @@ After:
 
 SilverStripe\Control\Director:
   rules:
-    'thank-you': Goldfinch\Component\Forms\Controllers\ThankYouController
+    'thank-you': Goldfinch\Component\Forms\ThankYou

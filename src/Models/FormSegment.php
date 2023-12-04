@@ -51,6 +51,8 @@ class FormSegment extends DataObject
         'FormSuccessMessage' => 'HTMLText',
         // 'FormFailMessage' => 'HTMLText',
 
+        'FormThankYouPage' => 'Boolean',
+
         'FormSendSenderEmail' => 'Boolean',
 
         'FormSenderName' => 'Varchar',
@@ -172,6 +174,7 @@ class FormSegment extends DataObject
 
         $data = [
             'id' => $this->ID,
+            'thankyou_page' => $this->FormThankYouPage,
             'parameters' => [],
             'form' => isset($cfg['vue']) ? $cfg['vue'] : [],
         ];
@@ -354,6 +357,11 @@ varian@wrynn.com : Varian Wrynn'),
                         // HTMLEditorField::create('FormFailMessage', 'Failed message')->addExtraClass('fcol-12'),
 
                     )->setTitle('Email to admin'),
+
+                    CheckboxField::create(
+                      'FormThankYouPage',
+                      'Thank you page'
+                    )->setDescription('Show thank you message on its own page'),
 
                     CheckboxField::create('FormSendSenderEmail','Send confirmation email to the sender'),
                     Wrapper::create(

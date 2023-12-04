@@ -5,6 +5,8 @@ namespace Goldfinch\Component\Forms\Extensions;
 use Goldfinch\Service\SendGrid;
 use Goldfinch\Requester\Requester;
 use Goldfinch\Illuminate\Validator;
+use SilverStripe\Control\HTTPRequest;
+use SilverStripe\Core\Injector\Injector;
 use Goldfinch\Service\Rules\GoogleRecaptcha;
 use Goldfinch\Component\Forms\Models\FormRecord;
 use Goldfinch\Component\Forms\Models\FormSegment;
@@ -77,6 +79,13 @@ class FormRequester extends Requester
             $record->RecordData = json_encode($recordData);
             $record->write();
             $segment->Records()->add($record);
+        }
+
+        if ($segment->FormThankYouPage)
+        {
+            $request = Injector::inst()->get(HTTPRequest::class);
+            $session = $request->getSession();
+            $session->set('thank-you-' . $segment->Type, $segment->replacableData($segment->FormSuccessMessage, $data));
         }
 
         return json_encode([
