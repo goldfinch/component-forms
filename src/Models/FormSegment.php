@@ -94,11 +94,11 @@ class FormSegment extends DataObject
     // * goldfinch/helpers
     // private static $field_descriptions = [];
     private static $required_fields = [
-        'FormName',
-        'FormSubject',
-        'FormFrom',
-        'FormReplyTo',
-        'FormTo',
+        // 'FormName',
+        // 'FormSubject',
+        // 'FormFrom',
+        // 'FormReplyTo',
+        // 'FormTo',
     ];
 
     public function formatedTo()
@@ -290,6 +290,8 @@ class FormSegment extends DataObject
             // 'FormBody',
             'FormSuccessMessage',
             // 'FormFailMessage',
+
+            'FormThankYouPageTitle',
 
             'FormSendSenderEmail',
             'FormSenderName',
