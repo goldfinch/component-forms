@@ -1,3 +1,6 @@
+#TODO
+- To field: `test@test : Name` needs to have a proper validation
+
 1)
 
 app/_config/component-forms.yml

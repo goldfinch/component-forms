@@ -146,7 +146,7 @@ class FormSegment extends DataObject
         return $data;
     }
 
-    public function RenderSegmentForm()
+    public function RenderSegmentForm($blockID, $blockClass)
     {
         if ($this->Disabled)
         {
@@ -157,11 +157,11 @@ class FormSegment extends DataObject
 
         if (ss_theme_template_file_exists($partialFile))
         {
-            return $this->Type ? $this->renderWith($partialFile) : null;
+            return $this->Type ? $this->customise(['Block' => $blockClass::get()->byID($blockID)])->renderWith($partialFile) : null;
         }
         else
         {
-            return $this->renderWith('Goldfinch/Component/Forms/FormSegment');
+            return $this->customise(['Block' => $blockClass::get()->byID($blockID)])->renderWith('Goldfinch/Component/Forms/FormSegment');
         }
 
         return null;

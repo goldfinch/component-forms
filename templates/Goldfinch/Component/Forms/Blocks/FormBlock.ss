@@ -1,5 +1,5 @@
 <% if Segment %>
     <% with Segment %>
-        $RenderSegmentForm
+        $RenderSegmentForm($Up.ID, $Up.ClassName)
     <% end_with %>
 <% end_if%>
