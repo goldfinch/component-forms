@@ -13,6 +13,7 @@
         "php": ">=8.0",
         "silverstripe/framework": "^5.0",
         "silverstripe/admin": "^2.0",
+        "goldfinch/taz": "^1.0",
         "goldfinch/json-editor": "^1.0",
         "unclecheese/display-logic": "^3.0",
         "silvershop/silverstripe-hasonefield": "dev-main",
