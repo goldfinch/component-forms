@@ -94,6 +94,7 @@ class FormSegment extends DataObject
     // * goldfinch/helpers
     // private static $field_descriptions = [];
     private static $required_fields = [
+        'Title',
         // 'FormName',
         // 'FormSubject',
         // 'FormFrom',
