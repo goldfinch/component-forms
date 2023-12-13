@@ -17,7 +17,7 @@ class FormsAdmin extends ModelAdmin
 
     private static $url_segment = 'forms';
     private static $menu_title = 'Forms';
-    private static $menu_icon_class = 'bi-send-fill';
+    private static $menu_icon_class = 'font-icon-block-form';
     // private static $menu_priority = -0.5;
 
     private static $managed_models = [
