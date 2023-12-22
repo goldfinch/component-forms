@@ -369,7 +369,7 @@ varian@wrynn.com : Varian Wrynn'),
 
                     TextField::create('FormThankYouPageTitle', 'Thank you page (Title)')->displayIf('FormThankYouPage')->isChecked()->end(),
 
-                    CheckboxField::create('FormSendSenderEmail','Send confirmation email to the sender'),
+                    CheckboxField::create('FormSendSenderEmail','Send confirmation email to the sender')->addExtraClass('pt-3'),
                     Wrapper::create(
 
                         FieldGroup::create(
