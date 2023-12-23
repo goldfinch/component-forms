@@ -184,7 +184,7 @@ class FormSegment extends DataObject
 
         if ($cfg && isset($cfg['supplies_fields']))
         {
-            $parameters = $this->dbObject('Parameters')->Parse()->toMap();
+            $parameters = $this->dbObject('Parameters')->Parse()->map();
 
             foreach($cfg['supplies_fields'] as $field)
             {
