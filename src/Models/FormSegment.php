@@ -7,6 +7,7 @@ use SilverStripe\View\SSViewer;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Forms\TextField;
 use SilverStripe\Forms\FieldGroup;
+use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\TextareaField;
@@ -369,7 +370,8 @@ varian@wrynn.com : Varian Wrynn'),
 
                     TextField::create('FormThankYouPageTitle', 'Thank you page (Title)')->displayIf('FormThankYouPage')->isChecked()->end(),
 
-                    CheckboxField::create('FormSendSenderEmail','Send confirmation email to the sender')->addExtraClass('pt-3'),
+                    LiteralField::create('FormSendSenderEmailHTML','<p></p>'),
+                    CheckboxField::create('FormSendSenderEmail','Send confirmation email to the sender'),
                     Wrapper::create(
 
                         FieldGroup::create(
