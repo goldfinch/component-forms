@@ -1,7 +1,7 @@
 <?php
 {{ namespace }}
-use Goldfinch\Component\Forms\Extensions\FormRequester;
 use Goldfinch\Illuminate\Validator;
+use Goldfinch\Component\Forms\Extensions\FormRequester;
 
 class {{ class }}Request extends FormRequester
 {

@@ -1,0 +1,15 @@
+---
+Name: app-{{ class }}
+After: "goldfinch/component-forms"
+---
+Goldfinch\Component\Forms\Models\Nest\FormSegment:
+  extensions:
+    - {{ namespace }}\FormSegmentExtension
+
+Goldfinch\Component\Forms\Configs\FormConfig:
+  extensions:
+    - {{ namespace }}\FormConfigExtension
+
+Goldfinch\Component\Forms\Blocks\FormsBlock:
+  extensions:
+    - {{ namespace }}\FormsBlockExtension

@@ -2,26 +2,13 @@
 
 namespace Goldfinch\Component\Forms\Models;
 
+use Goldfinch\Harvest\Harvest;
 use SilverStripe\ORM\ArrayList;
-use SilverStripe\View\SSViewer;
 use SilverStripe\ORM\DataObject;
-use SilverStripe\Forms\TextField;
-use SilverStripe\Forms\FieldGroup;
-use SilverStripe\Forms\LiteralField;
-use SilverStripe\Forms\CheckboxField;
-use SilverStripe\Forms\DropdownField;
-use SilverStripe\Forms\TextareaField;
-use SilverStripe\Security\Permission;
-use SilverStripe\Forms\GridField\GridField;
-use UncleCheese\DisplayLogic\Forms\Wrapper;
+use Goldfinch\Harvest\Traits\HarvestTrait;
 use Goldfinch\Component\Forms\Blocks\FormBlock;
-use Goldfinch\JSONEditor\Forms\JSONEditorField;
 use Goldfinch\Component\Forms\Models\FormRecord;
-use SilverStripe\Forms\GridField\GridFieldConfig;
 use Goldfinch\JSONEditor\ORM\FieldType\DBJSONText;
-use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
-use SilverStripe\Forms\GridField\GridFieldEditButton;
-use SilverStripe\Forms\GridField\GridFieldDataColumns;
 use SilverStripe\Forms\GridField\GridFieldPrintButton;
 use SilverStripe\Forms\GridField\GridFieldAddNewButton;
 use SilverStripe\Forms\GridField\GridFieldDeleteAction;
@@ -32,6 +19,8 @@ use SilverStripe\Forms\GridField\GridFieldAddExistingAutocompleter;
 
 class FormSegment extends DataObject
 {
+    use HarvestTrait;
+
     private static $table_name = 'FormSegment';
     private static $singular_name = 'form segment';
     private static $plural_name = 'form segments';
@@ -78,22 +67,6 @@ class FormSegment extends DataObject
         'Disabled.NiceAsBoolean' => 'Disabled',
     ];
 
-    // private static $belongs_to = [];
-    // private static $belongs_many_many = [];
-
-    // private static $default_sort = null;
-    // private static $indexes = null;
-    // private static $casting = [];
-    // private static $defaults = [];
-
-    // private static $field_labels = [];
-    // private static $searchable_fields = [];
-
-    // private static $cascade_deletes = [];
-    // private static $cascade_duplicates = [];
-
-    // * goldfinch/helpers
-    // private static $field_descriptions = [];
     private static $required_fields = [
         'Title',
         // 'FormName',
@@ -102,6 +75,120 @@ class FormSegment extends DataObject
         // 'FormReplyTo',
         // 'FormTo',
     ];
+
+    public function harvest(Harvest $harvest)
+    {
+        $harvest->remove([
+            'Title',
+            'Type',
+            'Disabled',
+            'Parameters',
+
+            'FormName',
+            'FormSubject',
+            'FormFrom',
+            'FormReplyTo',
+            'FormTo',
+            'FormBcc',
+            'FormCc',
+            // 'FormBody',
+            'FormSuccessMessage',
+            // 'FormFailMessage',
+
+            'FormThankYouPageTitle',
+
+            'FormSendSenderEmail',
+            'FormSenderName',
+            'FormSenderSubject',
+            'FormSenderFrom',
+            'FormSenderReplyTo',
+            'FormSenderBody',
+        ]);
+
+        if ($this->getSegmentTypeConfig('records'))
+        {
+            $recordsGrid = $harvest->dataField('Records');
+            $recordsGrid->getConfig()
+                ->removeComponentsByType(GridFieldDeleteAction::class)
+                ->removeComponentsByType(GridFieldAddNewButton::class)
+                ->removeComponentsByType(GridFieldPrintButton::class)
+                ->removeComponentsByType(GridFieldExportButton::class)
+                ->removeComponentsByType(GridFieldImportButton::class)
+                ->removeComponentsByType(GridFieldAddExistingAutocompleter::class)
+                // ->removeComponentsByType(GridFieldPaginator::class)
+                // ->addComponent(GridFieldConfigurablePaginator::create())
+            ;
+        }
+        else
+        {
+            $harvest->remove('Records');
+        }
+
+        $typesOptions = $this->getSegmentListOfTypes();
+
+        $harvest->fields([
+            'Root.Main' => [
+                $harvest->string('Title'),
+                $harvest->checkbox('Disabled')->setDescription('hide this form across the website'),
+                $harvest->dropdown('Type', 'Type', $typesOptions),
+            ],
+        ]);
+
+        $harvest->fields([
+            'Root.Settings' => [
+
+                $harvest->group(
+
+                    $harvest->string('FormName', 'Name')->setAttribute('placeholder', 'Jaina Proudmoore')->addExtraClass('fcol-6'),
+                    $harvest->string('FormFrom', 'From')->setAttribute('placeholder', 'jaina@proudmoore.com')->addExtraClass('fcol-6'),
+                    $harvest->string('FormSubject', 'Subject')->setAttribute('placeholder', 'Contact enquiry')->addExtraClass('fcol-6'),
+                    $harvest->string('FormReplyTo', 'Reply to')->setAttribute('placeholder', 'jaina@proudmoore.com')->addExtraClass('fcol-6'),
+                    $harvest->textarea('FormTo', 'To')->addExtraClass('fcol-12')->setAttribute('placeholder', 'john@doe.com : John Doe
+                    varian@wrynn.com : Varian Wrynn'),
+                    $harvest->textarea('FormBcc', 'BCC')->addExtraClass('fcol-12')->setAttribute('placeholder', 'john@doe.com : John Doe
+                    varian@wrynn.com : Varian Wrynn'),
+                    $harvest->textarea('FormCc', 'CC')->addExtraClass('fcol-12')->setAttribute('placeholder', 'john@doe.com : John Doe
+                    varian@wrynn.com : Varian Wrynn'),
+                    // $harvest->html('FormBody', 'Body')->addExtraClass('fcol-12'),
+                    $harvest->html('FormSuccessMessage', 'Thank you message')->addExtraClass('fcol-12'),
+                    // $harvest->html('FormFailMessage', 'Failed message')->addExtraClass('fcol-12'),
+
+                )->setTitle('Email to admin'),
+
+                $harvest->checkbox('FormThankYouPage', 'Thank you page')->setDescription('Show thank you message on its own page'),
+                $harvest->string('FormThankYouPageTitle', 'Thank you page (Title)')->displayIf('FormThankYouPage')->isChecked()->end(),
+                $harvest->literal('FormSendSenderEmailHTML','<p></p>'),
+                $harvest->checkbox('FormSendSenderEmail','Send confirmation email to the sender'),
+
+                $harvest->wrapper(
+                    $harvest->group(
+                        $harvest->string('FormSenderName', 'Name')->setAttribute('placeholder', 'Jaina Proudmoore')->addExtraClass('fcol-6'),
+                    )->setTitle('Email to sender'),
+                        $harvest->string('FormSenderFrom', 'From')->setAttribute('placeholder', 'jaina@proudmoore.com')->addExtraClass('fcol-6'),
+                        $harvest->string('FormSenderSubject', 'Subject')->setAttribute('placeholder', 'Thank you for your enquiry')->addExtraClass('fcol-6'),
+                        $harvest->string('FormSenderReplyTo', 'Reply to')->setAttribute('placeholder', 'jaina@proudmoore.com')->addExtraClass('fcol-6'),
+                        $harvest->html('FormSenderBody', 'Body')->addExtraClass('fcol-12'),
+                )->displayIf('FormSendSenderEmail')->isChecked()->end(),
+            ],
+        ]);
+
+        if ($this->ID && $this->Type)
+        {
+            $schemaParamsPath = BASE_PATH . '/app/_schema/' . 'form-' . $this->Type . '.json';
+
+            if (file_exists($schemaParamsPath))
+            {
+                $schemaParams = file_get_contents($schemaParamsPath);
+
+                $harvest->fields([
+                    'Root.Settings' => [
+                        $harvest->json('Parameters', null, [], '{}', null, $schemaParams)->addExtraClass('mt-2'),
+                    ],
+                ]);
+            }
+        }
+
+    }
 
     public function formatedTo()
     {
@@ -272,153 +359,6 @@ class FormSegment extends DataObject
         return null;
     }
 
-    public function getCMSFields()
-    {
-        $fields = parent::getCMSFields();
-
-        $fields->removeByName([
-            'Title',
-            'Type',
-            'Disabled',
-            'Parameters',
-
-            'FormName',
-            'FormSubject',
-            'FormFrom',
-            'FormReplyTo',
-            'FormTo',
-            'FormBcc',
-            'FormCc',
-            // 'FormBody',
-            'FormSuccessMessage',
-            // 'FormFailMessage',
-
-            'FormThankYouPageTitle',
-
-            'FormSendSenderEmail',
-            'FormSenderName',
-            'FormSenderSubject',
-            'FormSenderFrom',
-            'FormSenderReplyTo',
-            'FormSenderBody',
-        ]);
-
-        if ($this->getSegmentTypeConfig('records'))
-        {
-            $recordsGrid = $fields->dataFieldByName('Records');
-            $recordsGrid->getConfig()
-                ->removeComponentsByType(GridFieldDeleteAction::class)
-                ->removeComponentsByType(GridFieldAddNewButton::class)
-                ->removeComponentsByType(GridFieldPrintButton::class)
-                ->removeComponentsByType(GridFieldExportButton::class)
-                ->removeComponentsByType(GridFieldImportButton::class)
-                ->removeComponentsByType(GridFieldAddExistingAutocompleter::class)
-                // ->removeComponentsByType(GridFieldPaginator::class)
-                // ->addComponent(GridFieldConfigurablePaginator::create())
-            ;
-        }
-        else
-        {
-            $fields->removeByName('Records');
-        }
-
-        $typesOptions = $this->getSegmentListOfTypes();
-
-        $fields->addFieldsToTab(
-            'Root.Main',
-            [
-                TextField::create(
-                    'Title',
-                    'Title'
-                ),
-                CheckboxField::create('Disabled', 'Disabled')->setDescription('hide this form across the website'),
-                DropdownField::create(
-                    'Type',
-                    'Type',
-                    $typesOptions,
-                ),
-            ]
-        );
-
-        if ($this->getSegmentTypeConfig('settings'))
-        {
-            $fields->addFieldsToTab(
-                'Root.Settings',
-                [
-                    FieldGroup::create(
-
-                        TextField::create('FormName', 'Name')->setAttribute('placeholder', 'Jaina Proudmoore')->addExtraClass('fcol-6'),
-                        TextField::create('FormFrom', 'From')->setAttribute('placeholder', 'jaina@proudmoore.com')->addExtraClass('fcol-6'),
-                        TextField::create('FormSubject', 'Subject')->setAttribute('placeholder', 'Contact enquiry')->addExtraClass('fcol-6'),
-                        TextField::create('FormReplyTo', 'Reply to')->setAttribute('placeholder', 'jaina@proudmoore.com')->addExtraClass('fcol-6'),
-                        TextareaField::create('FormTo', 'To')->addExtraClass('fcol-12')->setAttribute('placeholder', 'john@doe.com : John Doe
-varian@wrynn.com : Varian Wrynn'),
-                        TextareaField::create('FormBcc', 'BCC')->addExtraClass('fcol-12')->setAttribute('placeholder', 'john@doe.com : John Doe
-varian@wrynn.com : Varian Wrynn'),
-                        TextareaField::create('FormCc', 'CC')->addExtraClass('fcol-12')->setAttribute('placeholder', 'john@doe.com : John Doe
-varian@wrynn.com : Varian Wrynn'),
-                        // HTMLEditorField::create('FormBody', 'Body')->addExtraClass('fcol-12'),
-                        HTMLEditorField::create('FormSuccessMessage', 'Thank you message')->addExtraClass('fcol-12'),
-                        // HTMLEditorField::create('FormFailMessage', 'Failed message')->addExtraClass('fcol-12'),
-
-                    )->setTitle('Email to admin'),
-
-                    CheckboxField::create(
-                      'FormThankYouPage',
-                      'Thank you page'
-                    )->setDescription('Show thank you message on its own page'),
-
-                    TextField::create('FormThankYouPageTitle', 'Thank you page (Title)')->displayIf('FormThankYouPage')->isChecked()->end(),
-
-                    LiteralField::create('FormSendSenderEmailHTML','<p></p>'),
-                    CheckboxField::create('FormSendSenderEmail','Send confirmation email to the sender'),
-                    Wrapper::create(
-
-                        FieldGroup::create(
-
-                            TextField::create('FormSenderName', 'Name')->setAttribute('placeholder', 'Jaina Proudmoore')->addExtraClass('fcol-6'),
-                            TextField::create('FormSenderFrom', 'From')->setAttribute('placeholder', 'jaina@proudmoore.com')->addExtraClass('fcol-6'),
-                            TextField::create('FormSenderSubject', 'Subject')->setAttribute('placeholder', 'Thank you for your enquiry')->addExtraClass('fcol-6'),
-                            TextField::create('FormSenderReplyTo', 'Reply to')->setAttribute('placeholder', 'jaina@proudmoore.com')->addExtraClass('fcol-6'),
-                            HTMLEditorField::create('FormSenderBody', 'Body')->addExtraClass('fcol-12'),
-
-                        )->setTitle('Email to sender'),
-
-                    )->displayIf('FormSendSenderEmail')->isChecked()->end(),
-
-                ]
-            );
-        }
-
-        if ($this->ID && $this->Type)
-        {
-            $schemaParamsPath = BASE_PATH . '/app/_schema/' . 'form-' . $this->Type . '.json';
-
-            if (file_exists($schemaParamsPath))
-            {
-                $schemaParams = file_get_contents($schemaParamsPath);
-
-                $fields->addFieldsToTab(
-                    'Root.Settings',
-                    [
-                        JSONEditorField::create('Parameters', 'Parameters', $this, [], '{}', null, $schemaParams)->addExtraClass('mt-2'),
-                    ]
-                );
-            }
-        }
-
-        return $fields;
-    }
-
-    // public function validate()
-    // {
-    //     $result = parent::validate();
-
-    //     // $result->addError('Error message');
-
-    //     return $result;
-    // }
-
     public function onBeforeWrite()
     {
         $changed = $this->getChangedFields();
@@ -433,31 +373,4 @@ varian@wrynn.com : Varian Wrynn'),
 
         parent::onBeforeWrite();
     }
-
-    // public function onBeforeDelete()
-    // {
-    //     // ..
-
-    //     parent::onBeforeDelete();
-    // }
-
-    // public function canView($member = null)
-    // {
-    //     return Permission::check('CMS_ACCESS_Company\Website\MyAdmin', 'any', $member);
-    // }
-
-    // public function canEdit($member = null)
-    // {
-    //     return Permission::check('CMS_ACCESS_Company\Website\MyAdmin', 'any', $member);
-    // }
-
-    // public function canDelete($member = null)
-    // {
-    //     return Permission::check('CMS_ACCESS_Company\Website\MyAdmin', 'any', $member);
-    // }
-
-    // public function canCreate($member = null, $context = [])
-    // {
-    //     return Permission::check('CMS_ACCESS_Company\Website\MyAdmin', 'any', $member);
-    // }
 }

@@ -3,11 +3,9 @@
 namespace Goldfinch\Component\Forms;
 
 use SilverStripe\View\ArrayData;
-use Goldfinch\Requester\Requester;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\Injector\Injector;
-use SilverStripe\Security\SecurityToken;
 use SilverStripe\ORM\FieldType\DBHTMLText;
 use Goldfinch\Component\Forms\Models\FormSegment;
 

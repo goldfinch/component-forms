@@ -1,0 +1,15 @@
+<?php
+{{ namespace }}
+use Goldfinch\Harvest\Harvest;
+use SilverStripe\ORM\DataExtension;
+
+class {{ class }}Extension extends DataExtension
+{
+    private static $db = [];
+
+    public function updateHarvest(Harvest $harvest)
+    {
+        // $harvest->require([]);
+        // $harvest->freshFields(['Root.Main' => []]);
+    }
+}
