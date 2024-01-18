@@ -2,6 +2,7 @@
 
 namespace Goldfinch\Component\Forms\Blocks;
 
+use Goldfinch\Harvest\Harvest;
 use DNADesign\Elemental\Models\BaseElement;
 use Goldfinch\Component\Forms\Models\FormSegment;
 
