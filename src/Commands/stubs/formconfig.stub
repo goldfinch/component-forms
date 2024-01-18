@@ -4,12 +4,12 @@ After: "goldfinch/component-forms"
 ---
 Goldfinch\Component\Forms\Models\Nest\FormSegment:
   extensions:
-    - {{ namespace_root }}FormSegmentExtension
+    - {{ namespace_root_extensions }}FormSegmentExtension
 
 Goldfinch\Component\Forms\Configs\FormConfig:
   extensions:
-    - {{ namespace_root }}FormConfigExtension
+    - {{ namespace_root_extensions }}FormConfigExtension
 
 Goldfinch\Component\Forms\Blocks\FormsBlock:
   extensions:
-    - {{ namespace_root }}FormsBlockExtension
+    - {{ namespace_root_extensions }}FormsBlockExtension
