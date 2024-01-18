@@ -76,7 +76,7 @@ class FormSegment extends DataObject
         // 'FormTo',
     ];
 
-    public function harvest(Harvest $harvest)
+    public function harvest(Harvest $harvest): void
     {
         $harvest->remove([
             'Title',

@@ -18,8 +18,6 @@ class ComponentFormsTemplatesCommand extends GeneratorCommand
 
     protected function execute($input, $output): int
     {
-        // parent::execute($input, $output);
-
         $io = new InputOutput($input, $output);
 
         $themes = Finder::create()
@@ -63,6 +61,8 @@ class ComponentFormsTemplatesCommand extends GeneratorCommand
 
             return Command::SUCCESS;
         }
+
+        return Command::FAILURE;
     }
 
     private function copyTemplates($theme)
@@ -75,7 +75,7 @@ class ComponentFormsTemplatesCommand extends GeneratorCommand
             'themes/' .
                 $theme .
                 '/templates/Goldfinch/Component/Forms/Blocks/FormsBlock.ss',
-        ); // , true);
+        );
 
         $fs->copy(
             BASE_PATH .
@@ -83,7 +83,7 @@ class ComponentFormsTemplatesCommand extends GeneratorCommand
             'themes/' .
                 $theme .
                 '/templates/Goldfinch/Component/Forms/Models/Nest/FormSegment.ss',
-        ); // , true);
+        );
 
         $fs->copy(
             BASE_PATH .
@@ -91,6 +91,6 @@ class ComponentFormsTemplatesCommand extends GeneratorCommand
             'themes/' .
                 $theme .
                 '/templates/Goldfinch/Component/Forms/Pages/Nest/Forms.ss',
-        ); // , true);
+        );
     }
 }
