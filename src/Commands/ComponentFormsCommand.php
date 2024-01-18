@@ -22,12 +22,6 @@ class ComponentFormsCommand extends GeneratorCommand
         $command->run($input, $output);
 
         $command = $this->getApplication()->find(
-            'vendor:component-forms:formcategory',
-        );
-        $input = new ArrayInput(['name' => 'FormCategory']);
-        $command->run($input, $output);
-
-        $command = $this->getApplication()->find(
             'vendor:component-forms:formconfig',
         );
         $input = new ArrayInput(['name' => 'FormConfig']);

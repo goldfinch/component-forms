@@ -71,26 +71,18 @@ class ComponentFormsTemplatesCommand extends GeneratorCommand
 
         $fs->copy(
             BASE_PATH .
-                '/vendor/goldfinch/component-forms/templates/Goldfinch/Component/Forms/Blocks/FormsBlock.ss',
+                '/vendor/goldfinch/component-forms/templates/Goldfinch/Component/Forms/Blocks/FormBlock.ss',
             'themes/' .
                 $theme .
-                '/templates/Goldfinch/Component/Forms/Blocks/FormsBlock.ss',
+                '/templates/Goldfinch/Component/Forms/Blocks/FormBlock.ss',
         );
 
         $fs->copy(
             BASE_PATH .
-                '/vendor/goldfinch/component-forms/templates/Goldfinch/Component/Forms/Models/Nest/FormSegment.ss',
+                '/vendor/goldfinch/component-forms/templates/Goldfinch/Component/Forms/FormSegment.ss',
             'themes/' .
                 $theme .
-                '/templates/Goldfinch/Component/Forms/Models/Nest/FormSegment.ss',
-        );
-
-        $fs->copy(
-            BASE_PATH .
-                '/vendor/goldfinch/component-forms/templates/Goldfinch/Component/Forms/Pages/Nest/Forms.ss',
-            'themes/' .
-                $theme .
-                '/templates/Goldfinch/Component/Forms/Pages/Nest/Forms.ss',
+                '/templates/Goldfinch/Component/Forms/FormSegment.ss',
         );
     }
 }

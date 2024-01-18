@@ -7,7 +7,7 @@ class {{ class }}Extension extends DataExtension
 {
     private static $db = [];
 
-    public function updateHarvest(Harvest $harvest)
+    public function updateHarvest(Harvest $harvest): void
     {
         // $harvest->require([]);
         // $harvest->freshFields(['Root.Main' => []]);
