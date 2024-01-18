@@ -16,34 +16,34 @@ class ComponentFormsCommand extends GeneratorCommand
     protected function execute($input, $output): int
     {
         $command = $this->getApplication()->find(
-            'vendor:component-forms-formsegment',
+            'vendor:component-forms:formsegment',
         );
         $input = new ArrayInput(['name' => 'FormSegment']);
         $command->run($input, $output);
 
         $command = $this->getApplication()->find(
-            'vendor:component-forms-formcategory',
+            'vendor:component-forms:formcategory',
         );
         $input = new ArrayInput(['name' => 'FormCategory']);
         $command->run($input, $output);
 
         $command = $this->getApplication()->find(
-            'vendor:component-forms-formconfig',
+            'vendor:component-forms:formconfig',
         );
         $input = new ArrayInput(['name' => 'FormConfig']);
         $command->run($input, $output);
 
         $command = $this->getApplication()->find(
-            'vendor:component-forms-formsblock',
+            'vendor:component-forms:formsblock',
         );
         $input = new ArrayInput(['name' => 'FormsBlock']);
         $command->run($input, $output);
 
-        $command = $this->getApplication()->find('templates:component-forms');
+        $command = $this->getApplication()->find('vendor:component-forms:templates');
         $input = new ArrayInput([]);
         $command->run($input, $output);
 
-        $command = $this->getApplication()->find('config:component-forms');
+        $command = $this->getApplication()->find('vendor:component-forms:config');
         $input = new ArrayInput(['name' => 'component-forms']);
         $command->run($input, $output);
 

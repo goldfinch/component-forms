@@ -5,10 +5,10 @@ namespace Goldfinch\Component\Forms\Commands;
 use Goldfinch\Taz\Console\GeneratorCommand;
 use Symfony\Component\Console\Command\Command;
 
-#[AsCommand(name: 'vendor:component-forms-formsblock')]
+#[AsCommand(name: 'vendor:component-forms:formsblock')]
 class FormBlockExtensionCommand extends GeneratorCommand
 {
-    protected static $defaultName = 'vendor:component-forms-formsblock';
+    protected static $defaultName = 'vendor:component-forms:formsblock';
 
     protected $description = 'Create FormsBlock extension';
 
