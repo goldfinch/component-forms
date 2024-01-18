@@ -39,9 +39,7 @@ class ComponentFormsCommand extends GeneratorCommand
         $input = new ArrayInput(['name' => 'FormsBlock']);
         $command->run($input, $output);
 
-        $command = $this->getApplication()->find(
-            'templates:component-forms',
-        );
+        $command = $this->getApplication()->find('templates:component-forms');
         $input = new ArrayInput([]);
         $command->run($input, $output);
 

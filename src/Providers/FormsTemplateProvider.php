@@ -9,19 +9,18 @@ class FormsTemplateProvider implements TemplateGlobalProvider
 {
     public static function get_template_global_variables(): array
     {
-        return [
-            'FormSegment',
-        ];
+        return ['FormSegment'];
     }
 
     // Eg: <% with FormSegment(newsletter) %> | <% with FormSegment(3) %>
     public static function FormSegment($typeOrID)
     {
-        if (is_numeric($typeOrID))
-        {
+        if (is_numeric($typeOrID)) {
             return FormSegment::get_by_id($typeOrID);
         }
 
-        return FormSegment::get()->filter(['Type' => $typeOrID])->first();
+        return FormSegment::get()
+            ->filter(['Type' => $typeOrID])
+            ->first();
     }
 }

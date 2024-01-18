@@ -1,20 +1,16 @@
 ---
 Name: goldfinch-component-forms
 ---
-
 Goldfinch\Component\Forms\Admin\FormsAdmin:
   extensions:
     - Goldfinch\Helpers\Extensions\BlocksAdminExtension
-
 ---
 Name: goldfinch-component-forms-icon
 Only:
-  moduleexists: 'goldfinch/enchantment'
+  moduleexists: "goldfinch/enchantment"
 ---
-
 Goldfinch\Component\Forms\Admin\FormsAdmin:
-  menu_icon_class: 'bi-send-fill'
+  menu_icon_class: "bi-send-fill"
 
 Goldfinch\Component\Forms\Blocks\FormBlock:
-  icon: 'bi-send-fill'
-
+  icon: "bi-send-fill"

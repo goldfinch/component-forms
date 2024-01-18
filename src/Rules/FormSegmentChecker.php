@@ -15,10 +15,12 @@ class FormSegmentChecker implements ValidationRule
         $this->segment_type = $segment_type;
     }
 
-    public function validate(string $attribute, mixed $value, Closure $fail): void
-    {
-        if (!is_numeric($value))
-        {
+    public function validate(
+        string $attribute,
+        mixed $value,
+        Closure $fail,
+    ): void {
+        if (!is_numeric($value)) {
             $fail('The :attribute invalid.');
         }
 
@@ -26,14 +28,10 @@ class FormSegmentChecker implements ValidationRule
 
         $segment = FormSegment::get()->byID($id);
 
-        if (!$segment || !$segment->exists())
-        {
+        if (!$segment || !$segment->exists()) {
             $fail('The :attribute invalid.');
-        }
-        else if ($this->segment_type)
-        {
-            if ($segment->Type != $this->segment_type)
-            {
+        } elseif ($this->segment_type) {
+            if ($segment->Type != $this->segment_type) {
                 $fail('The :attribute invalid.');
             }
         }

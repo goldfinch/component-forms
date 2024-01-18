@@ -22,16 +22,16 @@ class FormsAdmin extends ModelAdmin
 
     private static $managed_models = [
         FormSegment::class => [
-            'title'=> 'Segments',
+            'title' => 'Segments',
         ],
         FormRecord::class => [
-            'title'=> 'Records',
+            'title' => 'Records',
         ],
         FormBlock::class => [
-            'title'=> 'Blocks',
+            'title' => 'Blocks',
         ],
         FormConfig::class => [
-            'title'=> 'Settings',
+            'title' => 'Settings',
         ],
     ];
 
@@ -39,8 +39,7 @@ class FormsAdmin extends ModelAdmin
     {
         $config = parent::getGridFieldConfig();
 
-        if ($this->modelClass == FormRecord::class)
-        {
+        if ($this->modelClass == FormRecord::class) {
             $config->removeComponentsByType(GridFieldAddNewButton::class);
         }
 

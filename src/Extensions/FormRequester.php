@@ -34,43 +34,53 @@ class FormRequester extends Requester
         SendGrid::send([
             'name' => $segment->FormName ?? static::$fallback_from_name,
             'from' => $segment->FormFrom ?? static::$fallback_email,
-            'subject' => $segment->FormSubject ?? static::$fallback_from_subject,
+            'subject' =>
+                $segment->FormSubject ?? static::$fallback_from_subject,
             'reply_to' => $segment->FormReplyTo ?? static::$fallback_email,
-            'to' => $segment->formatedTo() && !empty($segment->formatedTo()) ? $segment->formatedTo() : static::$fallback_email,
-            'bcc' => $segment->formatedBcc() && !empty($segment->formatedBcc()) ? $segment->formatedBcc() : null,
-            'cc' => $segment->formatedCc() && !empty($segment->formatedCc()) ? $segment->formatedCc() : null,
+            'to' =>
+                $segment->formatedTo() && !empty($segment->formatedTo())
+                    ? $segment->formatedTo()
+                    : static::$fallback_email,
+            'bcc' =>
+                $segment->formatedBcc() && !empty($segment->formatedBcc())
+                    ? $segment->formatedBcc()
+                    : null,
+            'cc' =>
+                $segment->formatedCc() && !empty($segment->formatedCc())
+                    ? $segment->formatedCc()
+                    : null,
             'body' => static::$emailBody,
         ]);
 
         // send email to the user
         if (
-          $segment->FormSendSenderEmail &&
-          $data['email'] &&
-
-          $segment->FormSenderName &&
-          $segment->FormSenderFrom &&
-          $segment->FormSenderSubject &&
-          $segment->FormSenderReplyTo
-        )
-        {
+            $segment->FormSendSenderEmail &&
+            $data['email'] &&
+            $segment->FormSenderName &&
+            $segment->FormSenderFrom &&
+            $segment->FormSenderSubject &&
+            $segment->FormSenderReplyTo
+        ) {
             SendGrid::send([
                 'name' => $segment->FormSenderName,
                 'from' => $segment->FormSenderFrom,
                 'subject' => $segment->FormSenderSubject,
                 'reply_to' => $segment->FormSenderReplyTo,
                 'to' => [$data['email'] => $data['name']],
-                'body' => $segment->replacableData($segment->FormSenderBody, $data),
+                'body' => $segment->replacableData(
+                    $segment->FormSenderBody,
+                    $data,
+                ),
             ]);
         }
 
-        if ($cfg['records'])
-        {
-            if (isset($cfg['records_fields']) && !empty($cfg['records_fields']))
-            {
+        if ($cfg['records']) {
+            if (
+                isset($cfg['records_fields']) &&
+                !empty($cfg['records_fields'])
+            ) {
                 $recordData = array_only($data, $cfg['records_fields']);
-            }
-            else
-            {
+            } else {
                 $recordData = $data;
             }
 
@@ -81,16 +91,20 @@ class FormRequester extends Requester
             $segment->Records()->add($record);
         }
 
-        if ($segment->FormThankYouPage)
-        {
+        if ($segment->FormThankYouPage) {
             $request = Injector::inst()->get(HTTPRequest::class);
             $session = $request->getSession();
-            $session->set('thank-you-' . $segment->Type, $segment->replacableData($segment->FormSuccessMessage, $data));
+            $session->set(
+                'thank-you-' . $segment->Type,
+                $segment->replacableData($segment->FormSuccessMessage, $data),
+            );
         }
 
         return json_encode([
             'status' => true,
-            'message' => $segment->FormSuccessMessage ? $segment->replacableData($segment->FormSuccessMessage, $data) : self::message($data),
+            'message' => $segment->FormSuccessMessage
+                ? $segment->replacableData($segment->FormSuccessMessage, $data)
+                : self::message($data),
         ]);
     }
 
@@ -99,8 +113,11 @@ class FormRequester extends Requester
         $data = self::getData();
 
         Validator::validate($data, [
-            'token'       => ['required', new GoogleRecaptcha],
-            'segment_id'  => ['required', new FormSegmentChecker(self::$segment_type)],
+            'token' => ['required', new GoogleRecaptcha()],
+            'segment_id' => [
+                'required',
+                new FormSegmentChecker(self::$segment_type),
+            ],
         ]);
 
         return true;
@@ -118,8 +135,7 @@ class FormRequester extends Requester
     {
         $segment = self::getSegment();
 
-        if ($segment)
-        {
+        if ($segment) {
             return $segment->getSegmentTypeConfig();
         }
 
@@ -130,8 +146,7 @@ class FormRequester extends Requester
     {
         $segment = self::getSegment();
 
-        if ($segment)
-        {
+        if ($segment) {
             return json_decode($segment->FormSupplies(), true);
         }
 
