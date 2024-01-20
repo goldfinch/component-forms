@@ -14,10 +14,16 @@ class FormConfig extends DataObject implements TemplateGlobalProvider
 
     private static $table_name = 'FormConfig';
 
-    private static $db = [];
+    private static $db = [
+        'DisabledRecords' => 'Boolean',
+    ];
 
     public function harvest(Harvest $harvest): void
     {
-        // ..
+        $harvest->fields([
+            'Root.Main' => [
+                $harvest->checkbox('DisabledRecords', 'Disable log records'),
+            ],
+        ]);
     }
 }

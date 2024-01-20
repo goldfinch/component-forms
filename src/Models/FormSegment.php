@@ -8,6 +8,7 @@ use SilverStripe\ORM\DataObject;
 use Goldfinch\Harvest\Traits\HarvestTrait;
 use Goldfinch\Component\Forms\Blocks\FormBlock;
 use Goldfinch\Component\Forms\Models\FormRecord;
+use Goldfinch\Component\Forms\Configs\FormConfig;
 use Goldfinch\JSONEditor\ORM\FieldType\DBJSONText;
 use SilverStripe\Forms\GridField\GridFieldPrintButton;
 use SilverStripe\Forms\GridField\GridFieldAddNewButton;
@@ -67,15 +68,6 @@ class FormSegment extends DataObject
         'Disabled.NiceAsBoolean' => 'Disabled',
     ];
 
-    private static $required_fields = [
-        'Title',
-        // 'FormName',
-        // 'FormSubject',
-        // 'FormFrom',
-        // 'FormReplyTo',
-        // 'FormTo',
-    ];
-
     public function harvest(Harvest $harvest): void
     {
         $harvest->remove([
@@ -103,7 +95,12 @@ class FormSegment extends DataObject
             'FormSenderFrom',
             'FormSenderReplyTo',
             'FormSenderBody',
+
+            'Emailtoadmin',
+            'Emailtosender',
         ]);
+
+        $harvest->require(['Title', 'Type']);
 
         if ($this->getSegmentTypeConfig('records')) {
             $recordsGrid = $harvest->dataField('Records');
@@ -123,7 +120,7 @@ class FormSegment extends DataObject
             $harvest->remove('Records');
         }
 
-        $typesOptions = $this->getSegmentListOfTypes();
+        $typesOptions = $this->getSegmentListOfTypes() ?? [];
 
         $harvest->fields([
             'Root.Main' => [
@@ -139,6 +136,7 @@ class FormSegment extends DataObject
             'Root.Settings' => [
                 $harvest
                     ->group(
+                        'Email to admin', [
                         $harvest
                             ->string('FormName', 'Name')
                             ->setAttribute('placeholder', 'Jaina Proudmoore')
@@ -162,36 +160,33 @@ class FormSegment extends DataObject
                             )
                             ->addExtraClass('fcol-6'),
                         $harvest
-                            ->textarea('FormTo', 'To')
+                            ->text('FormTo', 'To')
                             ->addExtraClass('fcol-12')
                             ->setAttribute(
                                 'placeholder',
-                                'john@doe.com : John Doe
-                    varian@wrynn.com : Varian Wrynn',
+                                'john@doe.com : John Doe' . PHP_EOL . 'varian@wrynn.com : Varian Wrynn',
                             ),
                         $harvest
-                            ->textarea('FormBcc', 'BCC')
+                            ->text('FormBcc', 'BCC')
                             ->addExtraClass('fcol-12')
                             ->setAttribute(
                                 'placeholder',
-                                'john@doe.com : John Doe
-                    varian@wrynn.com : Varian Wrynn',
+                                'john@doe.com : John Doe' . PHP_EOL . 'varian@wrynn.com : Varian Wrynn',
                             ),
                         $harvest
-                            ->textarea('FormCc', 'CC')
+                            ->text('FormCc', 'CC')
                             ->addExtraClass('fcol-12')
                             ->setAttribute(
                                 'placeholder',
-                                'john@doe.com : John Doe
-                    varian@wrynn.com : Varian Wrynn',
+                                'john@doe.com : John Doe' . PHP_EOL . 'varian@wrynn.com : Varian Wrynn',
                             ),
                         // $harvest->html('FormBody', 'Body')->addExtraClass('fcol-12'),
                         $harvest
                             ->html('FormSuccessMessage', 'Thank you message')
                             ->addExtraClass('fcol-12'),
                         // $harvest->html('FormFailMessage', 'Failed message')->addExtraClass('fcol-12'),
-                    )
-                    ->setTitle('Email to admin'),
+                        ]
+                    ),
 
                 $harvest
                     ->checkbox('FormThankYouPage', 'Thank you page')
@@ -210,7 +205,7 @@ class FormSegment extends DataObject
                 $harvest
                     ->wrapper(
                         $harvest
-                            ->group(
+                            ->group('Email to sender', [
                                 $harvest
                                     ->string('FormSenderName', 'Name')
                                     ->setAttribute(
@@ -218,8 +213,6 @@ class FormSegment extends DataObject
                                         'Jaina Proudmoore',
                                     )
                                     ->addExtraClass('fcol-6'),
-                            )
-                            ->setTitle('Email to sender'),
                         $harvest
                             ->string('FormSenderFrom', 'From')
                             ->setAttribute(
@@ -244,7 +237,9 @@ class FormSegment extends DataObject
                         $harvest
                             ->html('FormSenderBody', 'Body')
                             ->addExtraClass('fcol-12'),
-                    )
+                            ]
+                        ),
+                        )
                     ->displayIf('FormSendSenderEmail')
                     ->isChecked()
                     ->end(),
@@ -273,6 +268,16 @@ class FormSegment extends DataObject
                     ],
                 ]);
             }
+        }
+
+        $cfg = FormConfig::current_config();
+
+        if (!class_exists('DNADesign\Elemental\Models\BaseElement')) {
+            $harvest->remove('Blocks');
+        }
+
+        if ($cfg->DisabledRecords) {
+            $harvest->remove('Records');
         }
     }
 

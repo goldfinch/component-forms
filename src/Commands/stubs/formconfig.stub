@@ -2,7 +2,7 @@
 Name: app-{{ class }}
 After: "goldfinch/component-forms"
 ---
-Goldfinch\Component\Forms\Models\Nest\FormSegment:
+Goldfinch\Component\Forms\Models\FormSegment:
   extensions:
     - {{ namespace_root_extensions }}FormSegmentExtension
 

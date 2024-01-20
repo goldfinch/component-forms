@@ -45,4 +45,25 @@ class FormsAdmin extends ModelAdmin
 
         return $config;
     }
+
+    public function getManagedModels()
+    {
+        $models = parent::getManagedModels();
+
+        $cfg = FormConfig::current_config();
+
+        if ($cfg->DisabledRecords) {
+            unset($models[FormRecord::class]);
+        }
+
+        if (!class_exists('DNADesign\Elemental\Models\BaseElement')) {
+            unset($models[FormBlock::class]);
+        }
+
+        if (empty($cfg->config('db')->db)) {
+            unset($models[FormConfig::class]);
+        }
+
+        return $models;
+    }
 }

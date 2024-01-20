@@ -34,10 +34,14 @@ class FormRecord extends DataObject
 
     public function harvest(Harvest $harvest): void
     {
-        $beautyData =
-            '<pre>' .
-            print_r(json_decode($this->RecordData, true), true) .
-            '</pre>';
+        if ($this->RecordData) {
+            $beautyData =
+                '<pre>' .
+                print_r(json_decode($this->RecordData, true), true) .
+                '</pre>';
+        } else {
+            $beautyData = '';
+        }
 
         $harvest->fields([
             'Root.Main' => [$harvest->literal('RecordData', $beautyData)],
