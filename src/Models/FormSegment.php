@@ -71,31 +71,6 @@ class FormSegment extends DataObject
     public function harvest(Harvest $harvest): void
     {
         $harvest->remove([
-            'Title',
-            'Type',
-            'Disabled',
-            'Parameters',
-
-            'FormName',
-            'FormSubject',
-            'FormFrom',
-            'FormReplyTo',
-            'FormTo',
-            'FormBcc',
-            'FormCc',
-            // 'FormBody',
-            'FormSuccessMessage',
-            // 'FormFailMessage',
-
-            'FormThankYouPageTitle',
-
-            'FormSendSenderEmail',
-            'FormSenderName',
-            'FormSenderSubject',
-            'FormSenderFrom',
-            'FormSenderReplyTo',
-            'FormSenderBody',
-
             'Emailtoadmin',
             'Emailtosender',
         ]);
@@ -104,18 +79,20 @@ class FormSegment extends DataObject
 
         if ($this->getSegmentTypeConfig('records')) {
             $recordsGrid = $harvest->dataField('Records');
-            $recordsGrid
-                ->getConfig()
-                ->removeComponentsByType(GridFieldDeleteAction::class)
-                ->removeComponentsByType(GridFieldAddNewButton::class)
-                ->removeComponentsByType(GridFieldPrintButton::class)
-                ->removeComponentsByType(GridFieldExportButton::class)
-                ->removeComponentsByType(GridFieldImportButton::class)
-                ->removeComponentsByType(
-                    GridFieldAddExistingAutocompleter::class,
-                    // ->removeComponentsByType(GridFieldPaginator::class)
-                    // ->addComponent(GridFieldConfigurablePaginator::create())
-                );
+            if ($recordsGrid) {
+                $recordsGrid
+                    ->getConfig()
+                    ->removeComponentsByType(GridFieldDeleteAction::class)
+                    ->removeComponentsByType(GridFieldAddNewButton::class)
+                    ->removeComponentsByType(GridFieldPrintButton::class)
+                    ->removeComponentsByType(GridFieldExportButton::class)
+                    ->removeComponentsByType(GridFieldImportButton::class)
+                    ->removeComponentsByType(
+                        GridFieldAddExistingAutocompleter::class,
+                        // ->removeComponentsByType(GridFieldPaginator::class)
+                        // ->addComponent(GridFieldConfigurablePaginator::create())
+                    );
+            }
         } else {
             $harvest->remove('Records');
         }
@@ -136,7 +113,6 @@ class FormSegment extends DataObject
             'Root.Settings' => [
                 $harvest
                     ->group(
-                        'Email to admin', [
                         $harvest
                             ->string('FormName', 'Name')
                             ->setAttribute('placeholder', 'Jaina Proudmoore')
@@ -184,9 +160,8 @@ class FormSegment extends DataObject
                         $harvest
                             ->html('FormSuccessMessage', 'Thank you message')
                             ->addExtraClass('fcol-12'),
-                        // $harvest->html('FormFailMessage', 'Failed message')->addExtraClass('fcol-12'),
-                        ]
-                    ),
+                        // $harvest->html('FormFailMessage', 'Failed message')->addExtraClass('fcol-12'
+                    )->setTitle('Email to admin'),
 
                 $harvest
                     ->checkbox('FormThankYouPage', 'Thank you page')
@@ -205,7 +180,7 @@ class FormSegment extends DataObject
                 $harvest
                     ->wrapper(
                         $harvest
-                            ->group('Email to sender', [
+                            ->group(
                                 $harvest
                                     ->string('FormSenderName', 'Name')
                                     ->setAttribute(
@@ -237,8 +212,8 @@ class FormSegment extends DataObject
                         $harvest
                             ->html('FormSenderBody', 'Body')
                             ->addExtraClass('fcol-12'),
-                            ]
-                        ),
+
+                        )->setTitle('Email to sender'),
                         )
                     ->displayIf('FormSendSenderEmail')
                     ->isChecked()
