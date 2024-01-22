@@ -1,0 +1,11 @@
+<?php
+{{ namespace }}
+use SilverStripe\Core\Extension;
+
+class {{ class }}Extension extends Extension
+{
+    public function init()
+    {
+        // ..
+    }
+}

@@ -1,0 +1,21 @@
+---
+Name: app-{{ class }}
+After: "goldfinch/component-forms"
+---
+Goldfinch\Component\Forms\Admin\FormsAdmin:
+  # menu_icon_class: ""
+  extensions:
+    - {{ namespace_root_extensions }}FormsAdminExtension
+
+Goldfinch\Component\Forms\Configs\FormConfig:
+  extensions:
+    - {{ namespace_root_extensions }}FormConfigExtension
+
+Goldfinch\Component\Forms\Blocks\FormBlock:
+  # icon: ""
+  extensions:
+    - {{ namespace_root_extensions }}FormBlockExtension
+
+Goldfinch\Component\Forms\Models\FormSegment:
+  extensions:
+    - {{ namespace_root_extensions }}FormSegmentExtension

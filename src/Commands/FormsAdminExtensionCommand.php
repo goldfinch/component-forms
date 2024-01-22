@@ -5,18 +5,18 @@ namespace Goldfinch\Component\Forms\Commands;
 use Goldfinch\Taz\Console\GeneratorCommand;
 use Symfony\Component\Console\Command\Command;
 
-#[AsCommand(name: 'vendor:component-forms:ext:config')]
-class FormConfigExtensionCommand extends GeneratorCommand
+#[AsCommand(name: 'vendor:component-forms:ext:admin')]
+class FormsAdminExtensionCommand extends GeneratorCommand
 {
-    protected static $defaultName = 'vendor:component-forms:ext:config';
+    protected static $defaultName = 'vendor:component-forms:ext:admin';
 
-    protected $description = 'Create FormConfig extension';
+    protected $description = 'Create FormsAdmin extension';
 
     protected $path = '[psr4]/Extensions';
 
-    protected $type = 'component-forms config extension';
+    protected $type = 'extension';
 
-    protected $stub = './stubs/formconfig-extension.stub';
+    protected $stub = './stubs/formsadmin-extension.stub';
 
     protected $prefix = 'Extension';
 

@@ -5,10 +5,10 @@ namespace Goldfinch\Component\Forms\Commands;
 use Goldfinch\Taz\Console\GeneratorCommand;
 use Symfony\Component\Console\Command\Command;
 
-#[AsCommand(name: 'vendor:component-forms:formsegment')]
+#[AsCommand(name: 'vendor:component-forms:ext:segment')]
 class FormSegmentExtensionCommand extends GeneratorCommand
 {
-    protected static $defaultName = 'vendor:component-forms:formsegment';
+    protected static $defaultName = 'vendor:component-forms:ext:segment';
 
     protected $description = 'Create FormSegment extension';
 
@@ -16,7 +16,7 @@ class FormSegmentExtensionCommand extends GeneratorCommand
 
     protected $type = 'component-forms item extension';
 
-    protected $stub = 'formsegment-extension.stub';
+    protected $stub = './stubs/formsegment-extension.stub';
 
     protected $prefix = 'Extension';
 

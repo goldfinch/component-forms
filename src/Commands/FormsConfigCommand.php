@@ -6,17 +6,17 @@ use Goldfinch\Taz\Console\GeneratorCommand;
 use Symfony\Component\Console\Command\Command;
 
 #[AsCommand(name: 'vendor:component-forms:config')]
-class ComponentFormsConfigCommand extends GeneratorCommand
+class FormsConfigCommand extends GeneratorCommand
 {
     protected static $defaultName = 'vendor:component-forms:config';
 
-    protected $description = 'Create component-forms config';
+    protected $description = 'Create Forms YML config';
 
     protected $path = 'app/_config';
 
-    protected $type = 'component-forms yml config';
+    protected $type = 'config';
 
-    protected $stub = 'formconfig.stub';
+    protected $stub = './stubs/config.stub';
 
     protected $extension = '.yml';
 
