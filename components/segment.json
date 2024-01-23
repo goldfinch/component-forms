@@ -1,0 +1,20 @@
+{
+    "type": "object",
+    "properties": {
+      "how_options": {
+            "title": "How did you hear about us? (Options)",
+            "type": "array",
+            "options": {},
+            "items": {
+                "type": "object",
+                "properties": {
+                    "label": {
+                        "title": "Title",
+                        "type": "string"
+                    }
+                }
+            }
+
+        }
+    }
+}

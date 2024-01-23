@@ -14,7 +14,7 @@ class FormConfigExtensionCommand extends GeneratorCommand
 
     protected $path = '[psr4]/Extensions';
 
-    protected $type = 'component-forms config extension';
+    protected $type = 'extension';
 
     protected $stub = './stubs/formconfig-extension.stub';
 

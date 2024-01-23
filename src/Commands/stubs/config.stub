@@ -3,6 +3,7 @@ Name: app-{{ class }}
 After: "goldfinch/component-forms"
 ---
 Goldfinch\Component\Forms\Admin\FormsAdmin:
+  # menu_priority: 1
   # menu_icon_class: ""
   extensions:
     - {{ namespace_root_extensions }}FormsAdminExtension
@@ -19,3 +20,4 @@ Goldfinch\Component\Forms\Blocks\FormBlock:
 Goldfinch\Component\Forms\Models\FormSegment:
   extensions:
     - {{ namespace_root_extensions }}FormSegmentExtension
+  segment_types:
