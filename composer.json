@@ -14,7 +14,7 @@
         "php": ">=8.0",
         "silverstripe/framework": "^5.0",
         "silverstripe/admin": "^2.0",
-        "goldfinch/harvest": "^1.0",
+        "goldfinch/fielder": "^1.0",
         "goldfinch/taz": "^1.0",
         "goldfinch/requester": "^1.0",
         "goldfinch/json-editor": "^1.0",

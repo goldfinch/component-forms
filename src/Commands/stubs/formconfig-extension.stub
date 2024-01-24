@@ -1,15 +1,15 @@
 <?php
 {{ namespace }}
-use Goldfinch\Harvest\Harvest;
+use Goldfinch\Fielder\Fielder;
 use SilverStripe\ORM\DataExtension;
 
 class {{ class }}Extension extends DataExtension
 {
     private static $db = [];
 
-    public function updateHarvest(Harvest $harvest): void
+    public function updateFielder(Fielder $fielder): void
     {
-        // $harvest->require([]);
-        // $harvest->freshFields(['Root.Main' => []]);
+        // $fielder->require([]);
+        // $fielder->freshFields(['Root.Main' => []]);
     }
 }

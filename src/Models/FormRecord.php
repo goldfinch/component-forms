@@ -3,14 +3,14 @@
 namespace Goldfinch\Component\Forms\Models;
 
 use Carbon\Carbon;
-use Goldfinch\Harvest\Harvest;
+use Goldfinch\Fielder\Fielder;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Forms\LiteralField;
-use Goldfinch\Harvest\Traits\HarvestTrait;
+use Goldfinch\Fielder\Traits\FielderTrait;
 
 class FormRecord extends DataObject
 {
-    use HarvestTrait;
+    use FielderTrait;
 
     private static $table_name = 'FormRecord';
     private static $singular_name = 'form record';
@@ -32,7 +32,7 @@ class FormRecord extends DataObject
 
     private static $default_sort = 'Created DESC';
 
-    public function harvest(Harvest $harvest): void
+    public function fielder(Fielder $fielder): void
     {
         if ($this->RecordData) {
             $beautyData =
@@ -43,11 +43,11 @@ class FormRecord extends DataObject
             $beautyData = '';
         }
 
-        $harvest->fields([
-            'Root.Main' => [$harvest->literal('RecordData', $beautyData)],
+        $fielder->fields([
+            'Root.Main' => [$fielder->literal('RecordData', $beautyData)],
         ]);
 
-        $harvest->makeReadonly();
+        $fielder->makeReadonly();
     }
 
     public function TimeAgo()

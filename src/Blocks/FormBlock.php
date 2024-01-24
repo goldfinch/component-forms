@@ -2,7 +2,7 @@
 
 namespace Goldfinch\Component\Forms\Blocks;
 
-use Goldfinch\Harvest\Harvest;
+use Goldfinch\Fielder\Fielder;
 use DNADesign\Elemental\Models\BaseElement;
 use Goldfinch\Component\Forms\Models\FormSegment;
 
@@ -26,10 +26,10 @@ class FormBlock extends BaseElement
 
     private static $owns = ['Segment'];
 
-    public function harvest(Harvest $harvest): void
+    public function fielder(Fielder $fielder): void
     {
-        $harvest->fields([
-            'Root.Main' => [$harvest->objectLink('Segment')],
+        $fielder->fields([
+            'Root.Main' => [$fielder->objectLink('Segment')],
         ]);
     }
 
