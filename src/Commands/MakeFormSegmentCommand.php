@@ -17,6 +17,8 @@ class MakeFormSegmentCommand extends GeneratorCommand
 
     protected $description = 'Make new form segment';
 
+    protected $no_arguments = true;
+
     protected function execute($input, $output): int
     {
         $io = new InputOutput($input, $output);
