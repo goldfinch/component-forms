@@ -12,6 +12,8 @@ class FormsTemplatesCommand extends GeneratorCommand
 
     protected $description = 'Publish [goldfinch/component-forms] templates';
 
+    protected $no_arguments = true;
+
     protected function execute($input, $output): int
     {
         $templater = Templater::create($input, $output, $this, 'goldfinch/component-forms');
