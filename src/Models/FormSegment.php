@@ -341,7 +341,12 @@ class FormSegment extends DataObject
                 $item = $parameters[$field];
 
                 if (is_object($item) && get_class($item) == ArrayList::class) {
-                    $data['parameters'][$field] = $item->toArray();
+
+                    foreach ($item as $i) {
+                        $data['parameters'][$field][] = $i->getValue();
+                    }
+
+                    // $data['parameters'][$field] = $item->toArray();
                 } elseif (is_string($item)) {
                     $data['parameters'][$field] = $item;
                 }
