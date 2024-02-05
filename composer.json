@@ -18,6 +18,7 @@
         "goldfinch/taz": "^1.0",
         "goldfinch/requester": "^1.0",
         "goldfinch/json-editor": "^1.0",
+        "goldfinch/illuminate": "^1.0",
         "unclecheese/display-logic": "^3.0",
         "silvershop/silverstripe-hasonefield": "dev-main",
         "jonom/silverstripe-someconfig": "^1.0",

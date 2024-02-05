@@ -3,8 +3,8 @@
 namespace Goldfinch\Component\Forms\Rules;
 
 use Closure;
+use Goldfinch\Illuminate\ValidationRule;
 use Goldfinch\Component\Forms\Models\FormSegment;
-use Illuminate\Contracts\Validation\ValidationRule;
 
 class FormSegmentChecker implements ValidationRule
 {

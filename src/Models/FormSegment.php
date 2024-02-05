@@ -75,7 +75,7 @@ class FormSegment extends DataObject
             'Emailtosender',
         ]);
 
-        $fielder->require(['Title', 'Type']);
+        $fielder->required(['Title', 'Type']);
 
         if ($this->getSegmentTypeConfig('records')) {
             $recordsGrid = $fielder->dataField('Records');
