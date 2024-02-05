@@ -113,6 +113,7 @@ class FormSegment extends DataObject
             'Root.Settings' => [
                 $fielder
                     ->group(
+                        'Email to admin',
                         $fielder
                             ->string('FormName', 'Name')
                             ->setAttribute('placeholder', 'Jaina Proudmoore')
@@ -161,7 +162,7 @@ class FormSegment extends DataObject
                             ->html('FormSuccessMessage', 'Thank you message')
                             ->addExtraClass('fcol-12'),
                         // $fielder->html('FormFailMessage', 'Failed message')->addExtraClass('fcol-12'
-                    )->setTitle('Email to admin'),
+                    ),
 
                 $fielder
                     ->checkbox('FormThankYouPage', 'Thank you page')
@@ -181,6 +182,7 @@ class FormSegment extends DataObject
                     ->wrapper(
                         $fielder
                             ->group(
+                                'Email to sender',
                                 $fielder
                                     ->string('FormSenderName', 'Name')
                                     ->setAttribute(
@@ -213,7 +215,7 @@ class FormSegment extends DataObject
                             ->html('FormSenderBody', 'Body')
                             ->addExtraClass('fcol-12'),
 
-                        )->setTitle('Email to sender'),
+                        ),
                         )
                     ->displayIf('FormSendSenderEmail')
                     ->isChecked()
