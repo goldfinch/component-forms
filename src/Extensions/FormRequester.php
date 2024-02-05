@@ -17,9 +17,9 @@ class FormRequester extends Requester
     public static $segment_type;
     public static $emailBody;
 
-    public static $fallback_email = 'johndoe@example.com';
-    public static $fallback_from_name = 'John Doe';
-    public static $fallback_from_subject = 'Subject';
+    public static $fallback_email = 'unassigned@unassignedemail.com';
+    public static $fallback_from_name = 'Unassigned Name';
+    public static $fallback_from_subject = 'Unassigned Subject';
 
     public static function handle()
     {
