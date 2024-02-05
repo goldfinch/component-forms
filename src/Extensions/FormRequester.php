@@ -105,7 +105,7 @@ class FormRequester extends Requester
             'message' => $segment->FormSuccessMessage
                 ? $segment->replacableData($segment->FormSuccessMessage, $data)
                 : self::message($data),
-        ]);
+        ], JSON_HEX_QUOT | JSON_HEX_TAG);
     }
 
     public static function validator()
