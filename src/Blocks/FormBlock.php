@@ -3,10 +3,10 @@
 namespace Goldfinch\Component\Forms\Blocks;
 
 use Goldfinch\Fielder\Fielder;
-use DNADesign\Elemental\Models\BaseElement;
+use Goldfinch\Blocks\Models\BlockElement;
 use Goldfinch\Component\Forms\Models\FormSegment;
 
-class FormBlock extends BaseElement
+class FormBlock extends BlockElement
 {
     private static $table_name = 'FormBlock';
     private static $singular_name = 'Form';
@@ -31,17 +31,5 @@ class FormBlock extends BaseElement
         $fielder->fields([
             'Root.Main' => [$fielder->objectLink('Segment')],
         ]);
-    }
-
-    public function getSummary()
-    {
-        return $this->getDescription();
-    }
-
-    public function getType()
-    {
-        $default = $this->i18n_singular_name() ?: 'Block';
-
-        return _t(__CLASS__ . '.BlockType', $default);
     }
 }

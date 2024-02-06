@@ -19,10 +19,10 @@
         "goldfinch/requester": "^1.0",
         "goldfinch/json-editor": "^1.0",
         "goldfinch/illuminate": "^1.0",
+        "goldfinch/blocks": "^1.0",
         "unclecheese/display-logic": "^3.0",
         "silvershop/silverstripe-hasonefield": "dev-main",
-        "jonom/silverstripe-someconfig": "^1.0",
-        "dnadesign/silverstripe-elemental": "^5.0"
+        "jonom/silverstripe-someconfig": "^1.0"
     },
     "autoload": {
         "psr-4": {
