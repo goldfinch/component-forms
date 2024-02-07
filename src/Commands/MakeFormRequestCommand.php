@@ -3,7 +3,6 @@
 namespace Goldfinch\Component\Forms\Commands;
 
 use Goldfinch\Taz\Console\GeneratorCommand;
-use Symfony\Component\Console\Command\Command;
 
 #[AsCommand(name: 'make:form-request')]
 class MakeFormRequestCommand extends GeneratorCommand
@@ -19,11 +18,4 @@ class MakeFormRequestCommand extends GeneratorCommand
     protected $stub = './stubs/form-request.stub';
 
     protected $prefix = 'Request';
-
-    protected function execute($input, $output): int
-    {
-        parent::execute($input, $output);
-
-        return Command::SUCCESS;
-    }
 }

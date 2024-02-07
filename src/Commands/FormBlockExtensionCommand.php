@@ -3,7 +3,6 @@
 namespace Goldfinch\Component\Forms\Commands;
 
 use Goldfinch\Taz\Console\GeneratorCommand;
-use Symfony\Component\Console\Command\Command;
 
 #[AsCommand(name: 'vendor:component-forms:ext:block')]
 class FormBlockExtensionCommand extends GeneratorCommand
@@ -19,11 +18,4 @@ class FormBlockExtensionCommand extends GeneratorCommand
     protected $stub = './stubs/formblock-extension.stub';
 
     protected $prefix = 'Extension';
-
-    protected function execute($input, $output): int
-    {
-        parent::execute($input, $output);
-
-        return Command::SUCCESS;
-    }
 }
