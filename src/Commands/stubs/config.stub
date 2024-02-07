@@ -20,4 +20,3 @@ Goldfinch\Component\Forms\Blocks\FormBlock:
 Goldfinch\Component\Forms\Models\FormSegment:
   extensions:
     - {{ namespace_root_extensions }}FormSegmentExtension
-  segment_types:

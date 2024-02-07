@@ -17,5 +17,5 @@ class FormBlockExtensionCommand extends GeneratorCommand
 
     protected $stub = './stubs/formblock-extension.stub';
 
-    protected $prefix = 'Extension';
+    protected $suffix = 'Extension';
 }

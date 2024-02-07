@@ -2,9 +2,7 @@
 
 namespace Goldfinch\Component\Forms\Commands;
 
-use Symfony\Component\Finder\Finder;
 use Goldfinch\Taz\Services\Templater;
-use Goldfinch\Taz\Services\InputOutput;
 use Goldfinch\Taz\Console\GeneratorCommand;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Console\Command\Command;
@@ -21,26 +19,11 @@ class MakeFormSegmentCommand extends GeneratorCommand
 
     protected function execute($input, $output): int
     {
-        $io = new InputOutput($input, $output);
+        $segmentName = $this->askClassNameQuestion('Name of the segment (eg: Contact, Newsletter)', $input, $output);
 
-        $segmentName = $io->question('Name of the segment (lowercase, dash, A-z0-9)', null, function ($answer) use ($io) {
-
-            if (!is_string($answer) || $answer === null) {
-                throw new \RuntimeException(
-                    'Invalid name'
-                );
-            } else if (strlen($answer) < 2) {
-                throw new \RuntimeException(
-                    'Too short name'
-                );
-            } else if(!preg_match('/^([A-z0-9\-]+)$/', $answer)) {
-                throw new \RuntimeException(
-                    'Name can contains letter, numbers and dash'
-                );
-            }
-
-            return $answer;
-        });
+        if (!$segmentName) {
+            return Command::FAILURE;
+        }
 
         $segmentName = strtolower($segmentName);
 
@@ -61,55 +44,58 @@ class MakeFormSegmentCommand extends GeneratorCommand
             'themes/'.$theme.'/templates/Components/Forms/'.$segmentName.'.ss',
         );
 
-        if (!$this->setSegmentInConfig($segmentName)) {
-            // create config
+        // find config
+        $config = $this->findYamlConfigFileByName('app-component-forms');
 
-            $command = $this->getApplication()->find('vendor:component-forms:config');
+        // create new config if not exists
+        if (!$config) {
 
-            $arguments = [
+            $command = $this->getApplication()->find('make:config');
+            $command->run(new ArrayInput([
                 'name' => 'component-forms',
-            ];
+                '--plain' => true,
+                '--after' => 'goldfinch/component-forms',
+                '--namesuffix' => 'app-',
+            ]), $output);
 
-            $greetInput = new ArrayInput($arguments);
-            $returnCode = $command->run($greetInput, $output);
-
-            $this->setSegmentInConfig($segmentName);
+            $config = $this->findYamlConfigFileByName('app-component-forms');
         }
 
-        $io->right('Form segment has been added');
+        $ucfirst = ucfirst($segmentName);
+
+        // update config
+        $this->updateYamlConfig(
+            $config,
+            'Goldfinch\Component\Forms\Models\FormSegment' . '.segment_types.' . $segmentName,
+            [
+                'label' => $ucfirst . ' form',
+                'settings' => true,
+                'records' => true,
+                'records_fields' => [
+                    'name',
+                    'email',
+                    'phone',
+                    'message',
+                    'newsletter',
+                    'how',
+                ],
+                'supplies_fields' => [
+                    'how_options',
+                ],
+                'replacable_data' => [
+                    'name',
+                    'email',
+                ],
+                'vue' => [
+                    'component' => $ucfirst . 'Form',
+                    'action' => $segmentName,
+                    'url' => 'api/req/' . $segmentName,
+                    'id' => 'form-' . $segmentName,
+                    'testmode' => true,
+                ]
+            ],
+        );
 
         return Command::SUCCESS;
-    }
-
-    private function setSegmentInConfig($segmentName)
-    {
-        $rewritten = false;
-
-        $finder = new Finder();
-        $files = $finder->in(BASE_PATH . '/app/_config')->files()->contains('Goldfinch\Component\Forms\Models\FormSegment');
-
-        foreach ($files as $file) {
-
-            // stop after first replacement
-            if ($rewritten) {
-                break;
-            }
-
-            if (strpos($file->getContents(), 'segment_types') !== false) {
-
-                $ucfirst = ucfirst($segmentName);
-
-                $newContent = $this->addToLine(
-                    $file->getPathname(),
-                    'segment_types:','    '.$segmentName.':'.PHP_EOL.'      label: "'.$ucfirst.' form"'.PHP_EOL.'      settings: true'.PHP_EOL.'      records: true'.PHP_EOL.'      records_fields:'.PHP_EOL.'        - name'.PHP_EOL.'        - email'.PHP_EOL.'        - phone'.PHP_EOL.'        - message'.PHP_EOL.'        - newsletter'.PHP_EOL.'        - how'.PHP_EOL.'      supplies_fields:'.PHP_EOL.'        - how_options'.PHP_EOL.'      replacable_data:'.PHP_EOL.'        - name'.PHP_EOL.'        - email'.PHP_EOL.'      vue:'.PHP_EOL.'        component: "'.$ucfirst.'Form"'.PHP_EOL.'        action: "'.$segmentName.'"'.PHP_EOL.'        url: "/api/req/'.$segmentName.'"'.PHP_EOL.'        id: "form-'.$segmentName.'"'.PHP_EOL.'        testmode: true',
-                );
-
-                file_put_contents($file->getPathname(), $newContent);
-
-                $rewritten = true;
-            }
-        }
-
-        return $rewritten;
     }
 }

@@ -17,5 +17,5 @@ class FormSegmentExtensionCommand extends GeneratorCommand
 
     protected $stub = './stubs/formsegment-extension.stub';
 
-    protected $prefix = 'Extension';
+    protected $suffix = 'Extension';
 }

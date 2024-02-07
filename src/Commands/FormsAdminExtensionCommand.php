@@ -17,5 +17,5 @@ class FormsAdminExtensionCommand extends GeneratorCommand
 
     protected $stub = './stubs/formsadmin-extension.stub';
 
-    protected $prefix = 'Extension';
+    protected $suffix = 'Extension';
 }
