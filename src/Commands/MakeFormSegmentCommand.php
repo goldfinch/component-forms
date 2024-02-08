@@ -55,7 +55,7 @@ class MakeFormSegmentCommand extends GeneratorCommand
                 'name' => 'component-forms',
                 '--plain' => true,
                 '--after' => 'goldfinch/component-forms',
-                '--namesuffix' => 'app-',
+                '--nameprefix' => 'app-',
             ]), $output);
 
             $config = $this->findYamlConfigFileByName('app-component-forms');
