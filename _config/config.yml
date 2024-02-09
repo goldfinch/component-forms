@@ -4,6 +4,10 @@ Name: goldfinch-component-forms
 Goldfinch\Component\Forms\Admin\FormsAdmin:
   extensions:
     - Goldfinch\Helpers\Extensions\BlocksAdminExtension
+
+Goldfinch\Component\Forms\Blocks\FormBlock:
+  extensions:
+    - Goldfinch\Helpers\Extensions\BaseElementExtension
 ---
 Name: goldfinch-component-forms-icon
 Only:

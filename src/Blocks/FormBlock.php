@@ -3,22 +3,18 @@
 namespace Goldfinch\Component\Forms\Blocks;
 
 use Goldfinch\Fielder\Fielder;
-use Goldfinch\Blocks\Models\BlockElement;
+use DNADesign\Elemental\Models\BaseElement;
 use Goldfinch\Component\Forms\Models\FormSegment;
 
-class FormBlock extends BlockElement
+class FormBlock extends BaseElement
 {
     private static $table_name = 'FormBlock';
     private static $singular_name = 'Form';
     private static $plural_name = 'Form';
 
-    private static $db = [];
-
     private static $inline_editable = false;
-    private static $description = '';
+    private static $description = 'Form block handler';
     private static $icon = 'font-icon-block-form';
-    // private static $disable_pretty_anchor_name = false;
-    // private static $displays_title_in_template = true;
 
     private static $has_one = [
         'Segment' => FormSegment::class,
