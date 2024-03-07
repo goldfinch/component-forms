@@ -2,7 +2,6 @@
 
 namespace Goldfinch\Component\Forms\Blocks;
 
-use Goldfinch\Fielder\Fielder;
 use DNADesign\Elemental\Models\BaseElement;
 use Goldfinch\Helpers\Traits\BaseElementTrait;
 use Goldfinch\Component\Forms\Models\FormSegment;
@@ -25,10 +24,16 @@ class FormBlock extends BaseElement
 
     private static $owns = ['Segment'];
 
-    public function fielder(Fielder $fielder): void
+    public function getCMSFields()
     {
+        $fields = parent::getCMSFields();
+
+        $fielder = $fields->fielder($this);
+
         $fielder->fields([
             'Root.Main' => [$fielder->objectLink('Segment')],
         ]);
+
+        return $fields;
     }
 }

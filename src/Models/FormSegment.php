@@ -2,10 +2,8 @@
 
 namespace Goldfinch\Component\Forms\Models;
 
-use Goldfinch\Fielder\Fielder;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataObject;
-use Goldfinch\Fielder\Traits\FielderTrait;
 use Goldfinch\Component\Forms\Blocks\FormBlock;
 use Goldfinch\Component\Forms\Models\FormRecord;
 use Goldfinch\Component\Forms\Configs\FormConfig;
@@ -20,8 +18,6 @@ use SilverStripe\Forms\GridField\GridFieldAddExistingAutocompleter;
 
 class FormSegment extends DataObject
 {
-    use FielderTrait;
-
     private static $table_name = 'FormSegment';
     private static $singular_name = 'form segment';
     private static $plural_name = 'form segments';
@@ -68,8 +64,12 @@ class FormSegment extends DataObject
         'Disabled.NiceAsBoolean' => 'Disabled',
     ];
 
-    public function fielder(Fielder $fielder): void
+    public function getCMSFields()
     {
+        $fields = parent::getCMSFields();
+
+        $fielder = $fields->fielder($this);
+
         $fielder->remove([
             'Emailtoadmin',
             'Emailtosender',
@@ -256,6 +256,8 @@ class FormSegment extends DataObject
         if ($cfg->DisabledRecords) {
             $fielder->remove('Records');
         }
+
+        return $fields;
     }
 
     public function formatedTo()

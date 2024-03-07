@@ -2,15 +2,13 @@
 
 namespace Goldfinch\Component\Forms\Configs;
 
-use Goldfinch\Fielder\Fielder;
 use JonoM\SomeConfig\SomeConfig;
 use SilverStripe\ORM\DataObject;
-use Goldfinch\Fielder\Traits\FielderTrait;
 use SilverStripe\View\TemplateGlobalProvider;
 
 class FormConfig extends DataObject implements TemplateGlobalProvider
 {
-    use SomeConfig, FielderTrait;
+    use SomeConfig;
 
     private static $table_name = 'FormConfig';
 
@@ -18,12 +16,18 @@ class FormConfig extends DataObject implements TemplateGlobalProvider
         'DisabledRecords' => 'Boolean',
     ];
 
-    public function fielder(Fielder $fielder): void
+    public function getCMSFields()
     {
+        $fields = parent::getCMSFields();
+
+        $fielder = $fields->fielder($this);
+
         $fielder->fields([
             'Root.Main' => [
                 $fielder->checkbox('DisabledRecords', 'Disable log records'),
             ],
         ]);
+
+        return $fields;
     }
 }
