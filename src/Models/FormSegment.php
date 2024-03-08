@@ -68,7 +68,7 @@ class FormSegment extends DataObject
     {
         $fields = parent::getCMSFields();
 
-        $fielder = $fields->fielder($this);
+        $fielder = $this->intFielder($fields)->getFielder();
 
         $fielder->remove([
             'Emailtoadmin',

@@ -20,7 +20,7 @@ class FormConfig extends DataObject implements TemplateGlobalProvider
     {
         $fields = parent::getCMSFields();
 
-        $fielder = $fields->fielder($this);
+        $fielder = $this->intFielder($fields)->getFielder();
 
         $fielder->fields([
             'Root.Main' => [
