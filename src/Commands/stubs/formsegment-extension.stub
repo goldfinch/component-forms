@@ -8,7 +8,9 @@ class {{ class }}Extension extends DataExtension
 
     public function updateCMSFields($fields)
     {
-        $fielder = $this->owner->intFielder($fields)->getFielder();
+        $fields->initFielder($this->owner);
+
+        $fielder = $fields->getFielder();
 
         // ..
     }
