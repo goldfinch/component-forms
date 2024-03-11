@@ -99,15 +99,28 @@ class FormSegment extends DataObject
 
         $typesOptions = $this->getSegmentListOfTypes() ?? [];
 
+        if (!$this->ID) {
+            $fielder->remove('Parameters');
+        }
+
         $fielder->fields([
             'Root.Main' => [
                 $fielder->string('Title'),
                 $fielder
                     ->checkbox('Disabled')
                     ->setDescription('hide this form across the website'),
-                $fielder->dropdown('Type', 'Type', $typesOptions),
             ],
         ]);
+
+        if (empty($typesOptions)) {
+            $fielder->addError('You need to create and register form segment first, please run <strong>php taz make:form-segment</strong>', 'warning');
+        } else {
+            $fielder->fields([
+                'Root.Main' => [
+                    $fielder->dropdown('Type', 'Type', $typesOptions),
+                ],
+            ]);
+        }
 
         $fielder->fields([
             'Root.Settings' => [
