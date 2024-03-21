@@ -270,6 +270,28 @@ class FormSegment extends DataObject
             $fielder->remove('Records');
         }
 
+        $fielder->validate([
+            'FormName' => 'required',
+            'FormSubject' => 'required',
+            'FormFrom' => 'required|email',
+            'FormReplyTo' => 'email',
+            'FormTo' => function($value, $fail) {
+                if ($value && strpos($value, ':') === false) {
+                    $fail('Email and name in :attribute. must be split by <strong>:</strong> eg: <strong>john@doe.com : John Doe</strong>');
+                }
+            },
+            'FormBcc' => function($value, $fail) {
+                if ($value && strpos($value, ':') === false) {
+                    $fail('Email and name in :attribute. must be split by <strong>:</strong> eg: <strong>john@doe.com : John Doe</strong>');
+                }
+            },
+            'FormCc' => function($value, $fail) {
+                if ($value && strpos($value, ':') === false) {
+                    $fail('Email and name in :attribute. must be split by <strong>:</strong> eg: <strong>john@doe.com : John Doe</strong>');
+                }
+            },
+        ]);
+
         return $fields;
     }
 
@@ -301,12 +323,17 @@ class FormSegment extends DataObject
 
                     $itemEmail = trim($item[0]);
                     $itemName = trim($item[1]);
-                } else {
+                } else if (strpos($line, ' ') !== false) {
+                    $item = explode(' ', $line);
+
                     $itemEmail = trim($item[0]);
+                    $itemName = trim($item[1]);
+                } else {
+                    $itemEmail = trim($line);
                     $itemName = explode('@', $itemEmail)[0];
                 }
 
-                $data[$itemEmail] = $itemName;
+                $data[trim($itemEmail)] = $itemName;
             }
         }
 
