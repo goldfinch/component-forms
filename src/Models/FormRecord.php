@@ -49,6 +49,8 @@ class FormRecord extends DataObject
 
         $fielder->makeReadonly();
 
+        $this->extend('updateCMSFields', $fields);
+
         return $fields;
     }
 

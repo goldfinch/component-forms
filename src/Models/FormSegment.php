@@ -292,6 +292,8 @@ class FormSegment extends DataObject
             },
         ]);
 
+        $this->extend('updateCMSFields', $fields);
+
         return $fields;
     }
 
@@ -387,12 +389,20 @@ class FormSegment extends DataObject
             }
 
             foreach ($cfg['supplies_fields'] as $field) {
+
                 $item = $parameters[$field];
 
                 if (is_object($item) && get_class($item) == ArrayList::class) {
 
-                    foreach ($item as $i) {
-                        $data['parameters'][$field][] = $i->getValue();
+                    foreach ($item->toArray() as $i) {
+                        if (is_string($i->getValue())) {
+                            $v = $i->getValue();
+                        } else {
+                            $v = $i->getValue()->toMap();
+                            $v['value'] = $v['label'];
+                        }
+
+                        $data['parameters'][$field][] = $v;
                     }
 
                     // $data['parameters'][$field] = $item->toArray();

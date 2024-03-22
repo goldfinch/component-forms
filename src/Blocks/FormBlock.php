@@ -34,6 +34,8 @@ class FormBlock extends BaseElement
             'Root.Main' => [$fielder->objectLink('Segment')],
         ]);
 
+        $this->extend('updateCMSFields', $fields);
+
         return $fields;
     }
 }

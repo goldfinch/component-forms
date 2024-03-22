@@ -1,3 +1,5 @@
+$Block.Title
+
 my custom template for specific segment type
 
 <div class="container">
