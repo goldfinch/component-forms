@@ -61,12 +61,24 @@ class FormRequester extends Requester
             $segment->FormSenderSubject &&
             $segment->FormSenderReplyTo
         ) {
+            $name = '';
+
+            if (isset($data['name'])) {
+                $name = $data['name'];
+            } else if (isset($data['firstname'])) {
+                $name = $data['firstname'];
+
+                if (isset($data['lastname'])) {
+                    $name .= ' ' . $data['lastname'];
+                }
+            }
+
             SendGrid::send([
                 'name' => $segment->FormSenderName,
                 'from' => $segment->FormSenderFrom,
                 'subject' => $segment->FormSenderSubject,
                 'reply_to' => $segment->FormSenderReplyTo,
-                'to' => [$data['email'] => $data['name']],
+                'to' => [$data['email'] => $name],
                 'body' => $segment->replacableData(
                     $segment->FormSenderBody,
                     $data,
