@@ -2,23 +2,28 @@
 
 namespace Goldfinch\Component\Forms\Extensions;
 
-use Goldfinch\Service\SendGrid;
-use Goldfinch\Requester\Requester;
-use Goldfinch\Illuminate\Validator;
-use SilverStripe\Control\HTTPRequest;
-use SilverStripe\Core\Injector\Injector;
-use Goldfinch\Service\Rules\GoogleRecaptcha;
 use Goldfinch\Component\Forms\Models\FormRecord;
 use Goldfinch\Component\Forms\Models\FormSegment;
 use Goldfinch\Component\Forms\Rules\FormSegmentChecker;
+use Goldfinch\Illuminate\Validator;
+use Goldfinch\Requester\Requester;
+use Goldfinch\Service\Rules\GoogleRecaptcha;
+use Goldfinch\Service\SendGrid;
+use SilverStripe\Control\HTTPRequest;
+use SilverStripe\Core\Injector\Injector;
 
 class FormRequester extends Requester
 {
     public static $segment_type;
+
     public static $emailBody;
 
+    public static $attachments = [];
+
     public static $fallback_email = 'unassigned@unassignedemail.com';
+
     public static $fallback_from_name = 'Unassigned Name';
+
     public static $fallback_from_subject = 'Unassigned Subject';
 
     public static function handle()
@@ -34,22 +39,19 @@ class FormRequester extends Requester
         SendGrid::send([
             'name' => $segment->FormName ?? static::$fallback_from_name,
             'from' => $segment->FormFrom ?? static::$fallback_email,
-            'subject' =>
-                $segment->FormSubject ?? static::$fallback_from_subject,
+            'subject' => $segment->FormSubject ?? static::$fallback_from_subject,
             'reply_to' => $segment->FormReplyTo ?? static::$fallback_email,
-            'to' =>
-                $segment->formatedTo() && !empty($segment->formatedTo())
+            'to' => $segment->formatedTo() && ! empty($segment->formatedTo())
                     ? $segment->formatedTo()
                     : static::$fallback_email,
-            'bcc' =>
-                $segment->formatedBcc() && !empty($segment->formatedBcc())
+            'bcc' => $segment->formatedBcc() && ! empty($segment->formatedBcc())
                     ? $segment->formatedBcc()
                     : null,
-            'cc' =>
-                $segment->formatedCc() && !empty($segment->formatedCc())
+            'cc' => $segment->formatedCc() && ! empty($segment->formatedCc())
                     ? $segment->formatedCc()
                     : null,
             'body' => static::$emailBody,
+            'attachments' => self::$attachments,
         ]);
 
         // send email to the user
@@ -65,11 +67,11 @@ class FormRequester extends Requester
 
             if (isset($data['name'])) {
                 $name = $data['name'];
-            } else if (isset($data['firstname'])) {
+            } elseif (isset($data['firstname'])) {
                 $name = $data['firstname'];
 
                 if (isset($data['lastname'])) {
-                    $name .= ' ' . $data['lastname'];
+                    $name .= ' '.$data['lastname'];
                 }
             }
 
@@ -89,7 +91,7 @@ class FormRequester extends Requester
         if ($cfg['records']) {
             if (
                 isset($cfg['records_fields']) &&
-                !empty($cfg['records_fields'])
+                ! empty($cfg['records_fields'])
             ) {
                 $recordData = array_only($data, $cfg['records_fields']);
             } else {
@@ -107,7 +109,7 @@ class FormRequester extends Requester
             $request = Injector::inst()->get(HTTPRequest::class);
             $session = $request->getSession();
             $session->set(
-                'thank-you-' . $segment->Type,
+                'thank-you-'.$segment->Type,
                 $segment->replacableData($segment->FormSuccessMessage, $data),
             );
         }
@@ -118,6 +120,20 @@ class FormRequester extends Requester
                 ? $segment->replacableData($segment->FormSuccessMessage, $data)
                 : self::message($data),
         ], JSON_HEX_QUOT | JSON_HEX_TAG);
+    }
+
+    public static function setAttachments($data, $field)
+    {
+        if (isset($data[$field]) && isset($data[$field]['tmp_name'])) {
+
+            foreach ($data[$field]['tmp_name'] as $key => $file) {
+                self::$attachments[] = [
+                    'name' => $data[$field]['name'][$key],
+                    'tmp_name' => $data[$field]['tmp_name'][$key],
+                    'size' => $data[$field]['size'][$key],
+                ];
+            }
+        }
     }
 
     public static function validator()
@@ -140,6 +156,7 @@ class FormRequester extends Requester
         $data = self::getData();
 
         $id = (int) $data['segment_id'];
+
         return FormSegment::get()->byID($id);
     }
 
