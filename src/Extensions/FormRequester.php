@@ -126,13 +126,25 @@ class FormRequester extends Requester
     {
         if (isset($data[$field]) && isset($data[$field]['tmp_name'])) {
 
-            foreach ($data[$field]['tmp_name'] as $key => $file) {
+            if (is_array($data[$field]['tmp_name'])) {
+
+                foreach ($data[$field]['tmp_name'] as $key => $file) {
+                    self::$attachments[] = [
+                        'name' => $data[$field]['name'][$key],
+                        'tmp_name' => $data[$field]['tmp_name'][$key],
+                        'size' => $data[$field]['size'][$key],
+                    ];
+                }
+
+            } else {
+
                 self::$attachments[] = [
-                    'name' => $data[$field]['name'][$key],
-                    'tmp_name' => $data[$field]['tmp_name'][$key],
-                    'size' => $data[$field]['size'][$key],
+                    'name' => $data[$field]['name'],
+                    'tmp_name' => $data[$field]['tmp_name'],
+                    'size' => $data[$field]['size'],
                 ];
             }
+
         }
     }
 
