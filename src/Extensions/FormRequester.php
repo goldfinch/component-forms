@@ -32,6 +32,12 @@ class FormRequester extends Requester
 
         // TODO: thank you page / popup
 
+        if (isset($data['email'])) {
+            $replyTo = $data['email'];
+        } else {
+            $replyTo = $segment->FormReplyTo ?? static::$fallback_email;
+        }
+
         $segment = self::getSegment();
         $cfg = $segment->getSegmentTypeConfig();
 
@@ -40,7 +46,7 @@ class FormRequester extends Requester
             'name' => $segment->FormName ?? static::$fallback_from_name,
             'from' => $segment->FormFrom ?? static::$fallback_email,
             'subject' => $segment->FormSubject ?? static::$fallback_from_subject,
-            'reply_to' => $segment->FormReplyTo ?? static::$fallback_email,
+            'reply_to' => $replyTo,
             'to' => $segment->formatedTo() && ! empty($segment->formatedTo())
                     ? $segment->formatedTo()
                     : static::$fallback_email,
